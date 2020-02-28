@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 /**
- * Write a Java program to remove the duplicate elements of a given array and return the new length of the array.
+ * Exercise 9: Write a Java program to remove the duplicate elements of a given array and return the new length of the array.
  *      Sample array: [20, 20, 30, 40, 50, 50, 50]
  *      After removing the duplicate elements the program should return [20, 30, 40, 50] as the array without duplicates.
  */
