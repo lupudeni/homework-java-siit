@@ -18,37 +18,43 @@ public class Exercise7 {
             int b = scanner.nextInt();
             System.out.println("Now select an operation type (\"+\", \"-\", \"*\", \"/\" or \"%\").");
             String operation = scanner.next();
-            switch (operation) {
-                case "+":
-                    System.out.println("The sum is " + (a + b));
-                    continueCalculation = decision();
-                    break;
-                case "-":
-                    System.out.println("The difference is " + (a - b));
-                    continueCalculation = decision();
-                    break;
-                case "*":
-                    System.out.println("The product is " + (a * b));
-                    continueCalculation = decision();
-                    break;
-                case "/":
-                    System.out.println("The division is " + (a / b));
-                    continueCalculation = decision();
-                    break;
-                case "%":
-                    System.out.println("The rest of the division is " + (a % b));
-                    continueCalculation = decision();
-                    break;
-                default:
-                    System.out.println("Bad operation :(");
-                    continueCalculation = decision();
-            }
+            continueCalculation = performOperation(a, b, operation);
         }
+    }
+
+    private static boolean performOperation(int a, int b, String operation) {
+        boolean continueCalculation;
+        switch (operation) {
+            case "+":
+                System.out.println("The sum is " + (a + b));
+                continueCalculation = decision();
+                break;
+            case "-":
+                System.out.println("The difference is " + (a - b));
+                continueCalculation = decision();
+                break;
+            case "*":
+                System.out.println("The product is " + (a * b));
+                continueCalculation = decision();
+                break;
+            case "/":
+                System.out.println("The division is " + (a / b));
+                continueCalculation = decision();
+                break;
+            case "%":
+                System.out.println("The rest of the division is " + (a % b));
+                continueCalculation = decision();
+                break;
+            default:
+                System.out.println("Bad operation :(");
+                continueCalculation = decision();
+        }
+        return continueCalculation;
     }
 
     public static boolean decision() {
         while (true) {
-            System.out.println("Would you like to perform a calculation? Type \'Yes\' or \'No\'.");
+            System.out.println("Would you like to perform a calculation? Type 'Yes' or 'No'.");
             String answer = scanner.next();
             if (answer.equalsIgnoreCase("Yes")) {
                 return true;
@@ -56,7 +62,7 @@ public class Exercise7 {
                 System.out.println("Ow, sorry to hear that :(. Bye bye!");
                 return false;
             } else {
-                System.out.println("Bad choice of words! Let's stick to \'Yes\' or \'No\', shall we?");
+                System.out.println("Bad choice of words! Let's stick to 'Yes' or 'No', shall we?");
             }
         }
     }

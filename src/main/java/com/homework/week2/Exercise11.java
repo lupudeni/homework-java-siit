@@ -10,10 +10,17 @@ import java.util.Scanner;
 
 public class Exercise11 {
     public static void main(String[] args) {
+        int month = readInput();
+        getNumberOfDays(month);
+    }
+
+    private static int readInput() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Type in the month in numbers: ");
-        int month = scanner.nextInt();
+        return scanner.nextInt();
+    }
 
+    private static void getNumberOfDays(int month) {
         switch (month) {
             case 1:
             case 3:

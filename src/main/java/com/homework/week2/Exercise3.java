@@ -7,10 +7,20 @@ import java.util.Scanner;
  */
 public class Exercise3 {
     public static void main(String[] args) {
+        int number = getNumber();
+        int max = getMaxDigit(number);
+        System.out.println("max digit = " + max);
+    }
+
+    private static int getNumber() {
         Scanner input = new Scanner(System.in);
         System.out.println("Please input a number:");
         int number = input.nextInt();
         number = Math.abs(number);
+        return number;
+    }
+
+    private static int getMaxDigit(int number) {
         int digit;
         int max = Integer.MIN_VALUE;
 
@@ -24,8 +34,7 @@ public class Exercise3 {
             }
             number /= 10;
         }
-
-        System.out.println("max digit = " + max);
+        return max;
     }
 }
 

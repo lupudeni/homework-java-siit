@@ -14,6 +14,10 @@ public class Exercise6 {
         System.out.println("Now select an operation type (\"+\", \"-\", \"*\", \"/\" or \"%\").");
         String operation = input.next();
 
+        performOperation(a, b, operation);
+    }
+
+    private static void performOperation(int a, int b, String operation) {
         if (operation.equals("+")) {
             System.out.println(a + " + " + b + " = " + (a + b));
         } else if (operation.equals("-")) {
