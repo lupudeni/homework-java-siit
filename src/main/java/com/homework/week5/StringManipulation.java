@@ -92,8 +92,16 @@ public class StringManipulation {
 
     //1
     private static void reverseStringInPlace(String s) {
+        int j = s.length() - 1;
+        StringBuilder sb = new StringBuilder(s);
+        for (int i = 0; i < s.length() / 2; i++) {
+            char temp = sb.charAt(i);
+            sb.setCharAt(i, sb.charAt(j));
+            sb.setCharAt(j, temp);
+            j--;
+        }
         System.out.println("String: \"" + s + "\"." +
-                "\nReversed: " + new StringBuilder(s).reverse().toString());
+                "\nReversed: " + sb.toString());
     }
 
     //2
