@@ -1,4 +1,4 @@
-package com.homework.week5;
+package com.homework.week5.atm;
 
 import java.util.ArrayList;
 import java.util.List;

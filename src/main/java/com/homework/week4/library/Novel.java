@@ -1,4 +1,4 @@
-package com.homework.week4;
+package com.homework.week4.library;
 
 public class Novel extends Book {
     private String type;

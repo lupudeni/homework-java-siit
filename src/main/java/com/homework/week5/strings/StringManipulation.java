@@ -1,5 +1,7 @@
 package com.homework.week5.strings;
 
+import com.homework.week5.MyPrinter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.homework.week5;
+package com.homework.week5.atm;
 
 public class BankAccount {
     private double balance;

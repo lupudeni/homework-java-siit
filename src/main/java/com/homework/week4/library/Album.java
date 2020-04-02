@@ -1,4 +1,4 @@
-package com.homework.week4;
+package com.homework.week4.library;
 
 public class Album extends Book {
     private String paperQuality;

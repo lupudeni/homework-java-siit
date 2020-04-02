@@ -1,4 +1,4 @@
-package com.homework.week5.strings;
+package com.homework.week5;
 
 public class MyPrinter {
 
