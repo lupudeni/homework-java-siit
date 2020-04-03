@@ -1,5 +1,6 @@
 package com.homework.week5.atm;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class BankDataBase {
     private List<Card> cards = new ArrayList<>();
 
     public BankDataBase() {
-        Card card1 = new Card("1", "0089");
+        Card card1 = new Card("1", "0000");
         Card card2 = new Card("2", "9089");
         Card card3 = new Card("3", "5687");
         Card card4 = new Card("4", "0001");
@@ -20,10 +21,10 @@ public class BankDataBase {
         cards.add(card4);
 
 
-        BankAccount account1 = new BankAccount(5000, card1);
-        BankAccount account2 = new BankAccount(67936.6, card2);
-        BankAccount account3 = new BankAccount(30.2, card3);
-        BankAccount account4 = new BankAccount(90000, card4);
+        BankAccount account1 = new BankAccount(new BigDecimal(5000), card1);
+        BankAccount account2 = new BankAccount(new BigDecimal("67936.6"), card2);
+        BankAccount account3 = new BankAccount(new BigDecimal("30.2"), card3);
+        BankAccount account4 = new BankAccount(new BigDecimal(90000), card4);
 
         bankAccounts.add(account1);
         bankAccounts.add(account2);
@@ -34,15 +35,22 @@ public class BankDataBase {
         List<BankAccount> user1Accounts = new ArrayList<>();
         user1Accounts.add(account1);
         user1Accounts.add(account2);
-        User user1 = new User("Costel", user1Accounts);
+        List<Card> user1Cards = new ArrayList<>();
+        user1Cards.add(card1);
+        user1Cards.add(card2);
+        User user1 = new User("Ionut", user1Accounts, user1Cards);
 
         List<BankAccount> user2Accounts = new ArrayList<>();
         user1Accounts.add(account3);
-        User user2 = new User("Nelu", user2Accounts);
+        List<Card> user2Cards = new ArrayList<>();
+        user2Cards.add(card3);
+        User user2 = new User("Putin", user2Accounts, user2Cards);
 
         List<BankAccount> user3Accounts = new ArrayList<>();
         user1Accounts.add(account4);
-        User user3 = new User("Barky", user3Accounts);
+        List<Card> user3Cards = new ArrayList<>();
+        user3Cards.add(card4);
+        User user3 = new User("Barky", user3Accounts, user3Cards);
 
         users.add(user1);
         users.add(user2);
@@ -71,5 +79,16 @@ public class BankDataBase {
             }
         }
         return null;
+    }
+
+    public User getUserByCard(Card card) {
+        if (card == null) {
+            return null;
+        }
+        return users.stream()
+                .filter(user -> user.getCards().contains(card))
+                .findFirst()
+                .orElse(null);
+
     }
 }

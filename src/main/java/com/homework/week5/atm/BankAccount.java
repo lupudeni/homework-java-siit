@@ -1,19 +1,21 @@
 package com.homework.week5.atm;
 
+import java.math.BigDecimal;
+
 public class BankAccount {
-    private double balance;
+    private BigDecimal balance;
     private Card card;
 
-    public BankAccount(double balance, Card card) {
+    public BankAccount(BigDecimal balance, Card card) {
         this.balance = balance;
         this.card = card;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

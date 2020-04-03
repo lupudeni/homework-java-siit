@@ -44,6 +44,10 @@ import java.util.List;
 public class StringManipulation {
     private MyPrinter printer;
 
+    public StringManipulation() {
+        this(new MyPrinter());
+    }
+
     public StringManipulation(MyPrinter printer) {
         this.printer = printer;
     }
@@ -141,8 +145,8 @@ public class StringManipulation {
     }
 
 
-    //5
-    boolean checkIfOnlyDigits(String s) {
+    //5 (I made this public as I believe i can use the method in other places as well (outside of this package)
+    public boolean checkIfOnlyDigits(String s) {
         if (s == null || s.trim().isEmpty()) {
             return false;
         }

@@ -21,7 +21,7 @@ public class Card {
         return pin;
     }
 
-    public void setPin(String pin) {
+    void setPin(String pin) {
         this.pin = pin;
     }
 }
