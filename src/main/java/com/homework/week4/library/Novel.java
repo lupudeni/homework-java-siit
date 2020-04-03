@@ -3,11 +3,6 @@ package com.homework.week4.library;
 public class Novel extends Book {
     private String type;
 
-    public Novel() {
-        super();
-        this.type = "Unknown genre";
-    }
-
     public Novel(String name, int pages, String type) {
         super(name, pages);
         this.type = type;

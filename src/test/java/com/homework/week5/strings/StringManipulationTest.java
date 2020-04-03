@@ -1,6 +1,6 @@
 package com.homework.week5.strings;
 
-import com.homework.week5.MyPrinter;
+import com.homework.util.MyPrinter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

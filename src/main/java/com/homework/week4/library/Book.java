@@ -4,10 +4,6 @@ public abstract class Book {
     private String name;
     private int pages;
 
-    public Book() {
-        this.name = "Unknown";
-    }
-
     public Book(String name, int pages) {
         this.name = name;
         this.pages = pages;

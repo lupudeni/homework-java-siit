@@ -1,12 +1,8 @@
 package com.homework.week4.library;
 
+
 public class Album extends Book {
     private String paperQuality;
-
-    public Album() {
-        super();
-        this.paperQuality = "Unknown quality";
-    }
 
     public Album(String name, int pages, String paperQuality) {
         super(name, pages);
