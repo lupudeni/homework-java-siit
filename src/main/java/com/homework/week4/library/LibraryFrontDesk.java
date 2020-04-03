@@ -11,7 +11,10 @@ public class LibraryFrontDesk {
     private Scanner numericalInput;
     private Scanner textInput;
     private LibraryCatalogue catalogue;
-    private int choice;
+
+    public LibraryFrontDesk() {
+        this(new Scanner(System.in), new Scanner(System.in), new LibraryCatalogue());
+    }
 
     public LibraryFrontDesk(Scanner numericalInput, Scanner textInput, LibraryCatalogue catalogue) {
         this.numericalInput = numericalInput;
@@ -19,22 +22,16 @@ public class LibraryFrontDesk {
         this.catalogue = catalogue;
     }
 
-     void populateDefaultLibrary() {
-        Book charlieChocolateFactory = new Novel("Charlie and the Chocolate Factory", 120, "Children's fantasy novel");
-        catalogue.bookList.add(charlieChocolateFactory);
-        Book nineteenEightyFour = new Novel("Nineteen Eighty-Four", 150, "Dystopian Fiction");
-        catalogue.bookList.add(nineteenEightyFour);
-        Book frankenstein = new Novel("Frankenstein", 90, "Horror fiction");
-        catalogue.bookList.add(frankenstein);
-        Book gustavKlimt = new Album("Gustav Klimt", 60, "Glossy paper");
-        catalogue.bookList.add(gustavKlimt);
-        Book vanGogh = new Album("Van Gogh", 744, "Silk coated paper");
-        catalogue.bookList.add(vanGogh);
-        Book dali = new Album("Dali", 96, "Semi-gloss paper");
-        catalogue.bookList.add(dali);
+    void populateDefaultLibrary() {
+        catalogue.addNovel("Charlie and the Chocolate Factory", 120, "Children's fantasy novel");
+        catalogue.addNovel("Nineteen Eighty-Four", 150, "Dystopian Fiction");
+        catalogue.addNovel("Frankenstein", 90, "Horror fiction");
+        catalogue.addAlbum("Gustav Klimt", 60, "Glossy paper");
+        catalogue.addAlbum("Van Gogh", 744, "Silk coated paper");
+        catalogue.addAlbum("Dali", 96, "Semi-gloss paper");
     }
 
-     void printMenu() {
+    void printMenu() {
         System.out.println("-----------------------------------------" +
                 "\nPress the number for one of the following options:" +
                 "\n1 --> List the books in the Library" +
@@ -44,12 +41,12 @@ public class LibraryFrontDesk {
                 "\n5 --> Quit");
     }
 
-     void makeChoice() {
+    void makeChoice() {
         boolean continueOptions = true;
 
         while (continueOptions) {
             printMenu();
-            choice = numericalInput.nextInt();
+            int choice = numericalInput.nextInt();
 
             switch (choice) {
                 case 1:
@@ -85,11 +82,11 @@ public class LibraryFrontDesk {
         }
     }
 
-     String addBook() {
+    String addBook() {
         System.out.println("What type of book would you like to add?" +
                 "\n1 --> Novel" +
                 "\n2 --> Album");
-        choice = numericalInput.nextInt();
+        int choice = numericalInput.nextInt();
         switch (choice) {
             case 1:
                 return addNovel();
@@ -100,7 +97,7 @@ public class LibraryFrontDesk {
         }
     }
 
-     String addNovel() {
+    String addNovel() {
         System.out.println("Novel name: ");
         String novelName = textInput.nextLine();
         System.out.println("Number of pages: ");
@@ -111,7 +108,7 @@ public class LibraryFrontDesk {
         return catalogue.addNovel(novelName, novelPages, type);
     }
 
-     String addAlbum() {
+    String addAlbum() {
         System.out.println("Album name: ");
         String albumName = textInput.nextLine();
         System.out.println("Number of pages: ");
@@ -123,22 +120,22 @@ public class LibraryFrontDesk {
     }
 
 
-     String deleteBook() {
+    String deleteBook() {
         System.out.println("Here is a list of all the books in the library.");
         catalogue.printList();
 
         System.out.println("What book would you like to remove? Type in the number: ");
-        choice = numericalInput.nextInt();
+        int choice = numericalInput.nextInt();
         return catalogue.deleteBook(choice);
     }
 
 
-     String displayDetails() {
+    String displayDetails() {
         System.out.println("Here is a list of all the books in the library.");
         catalogue.printList();
 
         System.out.println("For which book would you like to see the details? Type in the number: ");
-        choice = numericalInput.nextInt();
+        int choice = numericalInput.nextInt();
 
         return catalogue.displayDetails(choice);
     }

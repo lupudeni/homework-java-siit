@@ -1,6 +1,8 @@
 package com.homework.week4.library;
 
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = false)
 public class Album extends Book {
     private String paperQuality;
 

@@ -6,7 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryCatalogue {
-    List<Book> bookList = new ArrayList<>();
+    private List<Book> bookList;
+
+    public LibraryCatalogue() {
+        bookList = new ArrayList<>();
+    }
+
+    public LibraryCatalogue(List<Book> bookList) {
+        this.bookList = bookList;
+    }
 
     public void printList() {
         int i = 1;
@@ -17,7 +25,7 @@ public class LibraryCatalogue {
     }
 
     String addNovel(String name, int pages, String type) {
-        if (name == null || name.trim().isEmpty() || type == null || type.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty() || type == null || type.trim().isEmpty() || pages <= 0) {
             return ActionStatus.FAIL;
         }
         bookList.add(new Novel(name, pages, type));
@@ -25,7 +33,7 @@ public class LibraryCatalogue {
     }
 
     String addAlbum(String name, int pages, String paperQuality) {
-        if (name == null || name.trim().isEmpty() || paperQuality == null || paperQuality.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty() || paperQuality == null || paperQuality.trim().isEmpty() || pages <= 0) {
             return ActionStatus.FAIL;
         }
         bookList.add(new Album(name, pages, paperQuality));

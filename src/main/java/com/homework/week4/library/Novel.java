@@ -1,5 +1,8 @@
 package com.homework.week4.library;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = false)
 public class Novel extends Book {
     private String type;
 
