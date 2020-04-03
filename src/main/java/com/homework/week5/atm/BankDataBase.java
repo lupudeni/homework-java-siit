@@ -5,11 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BankDataBase {
-    private List<User> users = new ArrayList<>();
-    private List<BankAccount> bankAccounts = new ArrayList<>();
-    private List<Card> cards = new ArrayList<>();
+    private List<User> users;
+    private List<BankAccount> bankAccounts;
+    private List<Card> cards;
+
+    public BankDataBase(List<User> users, List<BankAccount> bankAccounts, List<Card> cards) {
+        this.users = users;
+        this.bankAccounts = bankAccounts;
+        this.cards = cards;
+    }
 
     public BankDataBase() {
+        initialiseDataBase();
+    }
+
+    public void initialiseDataBase() {
         Card card1 = new Card("1", "0000");
         Card card2 = new Card("2", "9089");
         Card card3 = new Card("3", "5687");

@@ -1,5 +1,8 @@
 package com.homework.week5.atm;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class Card {
     private String number;
     private String pin;

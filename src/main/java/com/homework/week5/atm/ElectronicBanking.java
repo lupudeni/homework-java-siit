@@ -6,8 +6,17 @@ import com.homework.week5.strings.StringManipulation;
 import java.math.BigDecimal;
 
 public class ElectronicBanking {
-    private BankDataBase dataBase = new BankDataBase();
-    private StringManipulation stringManipulation = new StringManipulation();
+    private BankDataBase dataBase;
+    private StringManipulation stringManipulation;
+
+    public ElectronicBanking() {
+        this(new BankDataBase(), new StringManipulation());
+    }
+
+    public ElectronicBanking(BankDataBase dataBase, StringManipulation stringManipulation) {
+        this.dataBase = dataBase;
+        this.stringManipulation = stringManipulation;
+    }
 
     Card logIn(String cardNumber, String pin) {
         Card card = dataBase.getCardByNumber(cardNumber);
