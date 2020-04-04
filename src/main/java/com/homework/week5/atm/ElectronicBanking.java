@@ -32,6 +32,9 @@ public class ElectronicBanking {
 
     BigDecimal interrogateBalance(Card card) {
         BankAccount account = dataBase.getBankAccountByCardNumber(card.getNumber());
+        if (account == null) {
+            return null;
+        }
         return account.getBalance();
     }
 
@@ -40,9 +43,8 @@ public class ElectronicBanking {
             BankAccount account = dataBase.getBankAccountByCardNumber(card.getNumber());
             account.setBalance(account.getBalance().add(amount));
             return ActionStatus.SUCCESS;
-        } else {
-            return ActionStatus.FAIL;
         }
+        return ActionStatus.FAIL;
     }
 
     String withdraw(Card card, BigDecimal amount) {
