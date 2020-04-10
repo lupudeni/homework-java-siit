@@ -3,12 +3,16 @@ package com.homework.firstquiz;
 import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
-public class Square implements Shape{
+public class Square implements Shape {
 
     private double side;
 
     public Square(double side) {
-        this.side = side;
+        if (side > 0) {
+            this.side = side;
+        } else {
+            throw new IllegalArgumentException("Side must be greater than 0.");
+        }
     }
 
     @Override

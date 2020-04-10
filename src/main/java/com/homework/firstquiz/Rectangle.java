@@ -9,8 +9,12 @@ public class Rectangle implements Shape{
     private double length;
 
     public Rectangle(double width, double length) {
-        this.length = length;
-        this.width = width;
+        if (length > 0 && width > 0) {
+            this.length = length;
+            this.width = width;
+        } else  {
+            throw new IllegalArgumentException("Width and length must be greater than 0.");
+        }
     }
 
     @Override

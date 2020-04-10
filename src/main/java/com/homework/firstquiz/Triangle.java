@@ -9,9 +9,13 @@ public class Triangle implements Shape {
     private double sideC;
 
     public Triangle(double sideA, double sideB, double sideC) {
-        this.sideA = sideA;
-        this.sideB = sideB;
-        this.sideC = sideC;
+        if (sideA > 0 && sideB > 0 && sideC > 0) {
+            this.sideA = sideA;
+            this.sideB = sideB;
+            this.sideC = sideC;
+        } else {
+            throw new IllegalArgumentException("All sides must be greater than 0.");
+        }
     }
 
     @Override
