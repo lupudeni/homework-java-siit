@@ -5,12 +5,13 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(MockitoJUnitRunner.class)
 
 public class RectangleTest {
     @Test
-    public void given_Greater_Than_Zero_Side_When_Creating_Rectangle_Then_Object_Is_Created() {
+    public void given_Greater_Than_Zero_Width_And_Length_When_Creating_Rectangle_Then_Object_Is_Created() {
         //Given
         double width = 4;
         double length = 8;
@@ -23,17 +24,19 @@ public class RectangleTest {
         assertThat(rectangle).isNotNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void given_Lower_Than_Zero_Radius_When_Creating_Rectangle_Then_Throws_IllegalArgumentException() {
+    @Test
+    public void given_Lower_Than_Zero_Width_And_Length_When_Creating_Rectangle_Then_Throws_IllegalArgumentException() {
         //Given
         double width = 0;
         double length = 8;
 
         //When
-        Rectangle rectangle = new Rectangle(width, length);
+       Throwable throwable = catchThrowable(
+               () -> new Rectangle(width, length));
 
         //Then
-        //It doesn't get to this
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).hasMessage("Width and length must be greater than 0.");
     }
 
 }

@@ -24,7 +24,7 @@ public class TriangleTest {
         assertThat(triangle).isNotNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void given_Lower_Than_Zero_Sides_When_Creating_Triangle_Then_Throws_IllegalArgumentException() {
         //Given
         double sideA = 0;
@@ -32,10 +32,13 @@ public class TriangleTest {
         double sideC = 5;
 
         //When
-        Triangle triangle = new Triangle(sideA, sideB, sideC);
+        Throwable thrown = catchThrowable(
+                ()-> new Triangle(sideA, sideB, sideC));
 
         //Then
-        //It doesn't get to this
+        assertThat(thrown).isInstanceOf(IllegalArgumentException.class);
+        assertThat(thrown).hasMessage("All sides must be greater than 0.");
+
     }
 
 }

@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SquareTest {
@@ -20,16 +21,18 @@ public class SquareTest {
         assertThat(square).isNotNull();
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void given_Lower_Than_Zero_Radius_When_Creating_Square_Then_Throws_IllegalArgumentException() {
+    @Test
+    public void given_Lower_Than_Zero_Side_When_Creating_Square_Then_Throws_IllegalArgumentException() {
         //Given
         double side = -1;
 
         //When
-        Square square = new Square(side);
+        Throwable throwable = catchThrowable(
+                () -> new Square(side));
 
         //Then
-        //It doesn't get to this
+        assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+        assertThat(throwable).hasMessage("Side must be greater than 0.");
     }
 
 }
