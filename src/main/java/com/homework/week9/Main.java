@@ -7,33 +7,10 @@ public class Main {
     public static void main(String[] args) {
         List<Person> persons = new ArrayList<>();
 
-        Person romeo = new Person("Romeo", 16);
-        Person juliet = new Person("Juliet", 14);
-        Person ladyCapulet = new Person("Lady Capulet", 30);
-        Person benvolio = new Person("Benvolio", 20);
-        Person tybalt = new Person("Tybalt", 22);
-        Person mercutio = new Person("Mercutio", 18);
-        Person countParis = new Person("Count Paris", 25);
+        populateList(persons);
 
-        persons.add(romeo);
-        persons.add(juliet);
-        persons.add(ladyCapulet);
-        persons.add(benvolio);
-        persons.add(tybalt);
-        persons.add(mercutio);
-        persons.add(countParis);
-
-        Set<Person> personsByAge = new TreeSet<>(new PersonAgeComparator());
-        personsByAge.addAll(persons);
-
-        Set<Person> personsByName = new TreeSet<>(new PersonNameComparator());
-        personsByName.addAll(persons);
-
-        System.out.println("Persons by age: ");
-        personsByAge.forEach(person -> System.out.println(person.toString()));
-        System.out.println("--------------------------");
-        System.out.println("Persons by name: ");
-        personsByName.forEach(person -> System.out.println(person.toString()));
+        printPersonsByAge(persons);
+        printPersonsByName(persons);
 
         Hobby dancing = Hobby.builder()
                 .hobbyName("Dancing")
@@ -76,16 +53,49 @@ public class Main {
 
         Map<Person, List<Hobby>> personToHobbies = new HashMap<>();
 
-        personToHobbies.put(romeo, Arrays.asList(swordFighting, drinking, travelling, playing));
-        personToHobbies.put(juliet, Arrays.asList(dancing, playing));
-        personToHobbies.put(ladyCapulet, Arrays.asList(drinking, dancing));
-        System.out.println("--------------------------");
-        System.out.println("Hobbies of Romeo: ");
+        personToHobbies.put(persons.get(0), Arrays.asList(swordFighting, drinking, travelling, playing));
+        personToHobbies.put(persons.get(1), Arrays.asList(dancing, playing));
+        personToHobbies.put(persons.get(2), Arrays.asList(drinking, dancing));
 
-        printHobbies(personToHobbies.get(romeo));
+        System.out.println("Hobbies of " + persons.get(0).getName() + ":");
+        printHobbies(personToHobbies.get(persons.get(0)));
     }
 
-    static void printHobbies(List<Hobby> hobbies) {
+    private static void populateList(List<Person> persons) {
+        Person romeo = new Person("Romeo", 16);
+        Person juliet = new Person("Juliet", 14);
+        Person ladyCapulet = new Person("Lady Capulet", 30);
+        Person benvolio = new Person("Benvolio", 20);
+        Person tybalt = new Person("Tybalt", 22);
+        Person mercutio = new Person("Mercutio", 18);
+        Person countParis = new Person("Count Paris", 25);
+
+        persons.add(romeo);
+        persons.add(juliet);
+        persons.add(ladyCapulet);
+        persons.add(benvolio);
+        persons.add(tybalt);
+        persons.add(mercutio);
+        persons.add(countParis);
+    }
+
+    private static void printPersonsByName(List<Person> persons) {
+        Set<Person> personsByName = new TreeSet<>(new PersonNameComparator());
+        personsByName.addAll(persons);
+        System.out.println("Persons by name: ");
+        personsByName.forEach(person -> System.out.println(person.toString()));
+        System.out.println("--------------------------");
+    }
+
+    private static void printPersonsByAge(List<Person> persons) {
+        Set<Person> personsByAge = new TreeSet<>(new PersonAgeComparator());
+        personsByAge.addAll(persons);
+        System.out.println("Persons by age: ");
+        personsByAge.forEach(person -> System.out.println(person.toString()));
+        System.out.println("--------------------------");
+    }
+
+    private static void printHobbies(List<Hobby> hobbies) {
         for (Hobby hobby : hobbies) {
             System.out.println("Hobby: " + hobby.getHobbyName());
             for (Address address : hobby.getAddresses()) {
