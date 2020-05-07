@@ -5,31 +5,47 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Cinema {
     private String name;
     private Map<String, Seat> seats;
-    private BigDecimal cinemaPrice;
 
     public Cinema(String cinemaName, BigDecimal cinemaPrice) {
         this.name = cinemaName;
         this.seats = new HashMap<>();
+        generateSeats(cinemaPrice);
+    }
 
-        for(char ch = 'A'; ch <= 'J'; ch++) {
+    public Seat getSeat(String seatNr) {
+        return seats.get(seatNr);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    private void generateSeats(BigDecimal cinemaPrice) {
+        for (char ch = 'A'; ch <= 'J'; ch++) {
             for (int i = 1; i <= 10; i++) {
                 String seatNr = "" + ch + i;
-                seats.put(seatNr, new Seat(seatNr, cinemaPrice));
+                BigDecimal seatPrice = generatePrice(seatNr, cinemaPrice);
+                seats.put(seatNr, new Seat(seatNr, seatPrice));
             }
         }
     }
 
-    public Seat getSeat(String seatNr) {
-       return seats.get(seatNr);
+    private BigDecimal generatePrice(String seatNumber, BigDecimal cinemaPrice) {
+        if (CinemaReservationService.PREMIUM_SEATS.contains(seatNumber)) {
+            return cinemaPrice.multiply(new BigDecimal("1.1"));
+        } else {
+            return cinemaPrice;
+        }
     }
 
-    public Map<String, Seat> getSeats() {
-        return seats;
+    public Set<Seat> getAvailableSeats() {
+        return seats.values().stream()
+                .filter(seat -> !seat.isReserved())
+                .collect(Collectors.toSet());
     }
-
-
 }

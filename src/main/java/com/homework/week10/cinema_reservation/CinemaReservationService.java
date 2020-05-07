@@ -1,10 +1,7 @@
 package com.homework.week10.cinema_reservation;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * "Every cinema has a sweet spot which the designers were working towards and typically this is 2/3rds the way back in the middle of the row.
@@ -25,7 +22,7 @@ public class CinemaReservationService {
     public static final List<String> PREMIUM_SEATS = Arrays.asList("F3", "F4","F5","F6","F7","F8","G3","G4","G5","G6","G7","G8");
 
 
-    private Map<String, Cinema> cinemas;
+    private final Map<String, Cinema> cinemas;
 
     public CinemaReservationService() {
         this.cinemas = new HashMap<>();
@@ -53,7 +50,6 @@ public class CinemaReservationService {
     }
 
     public String deleteReservation(String cinemaName, String seatNumber) {
-
         Seat seat = getSeatByCinema(cinemaName, seatNumber);
         if (seat == null || !seat.isReserved()) {
             return NO_RESERVATION;
@@ -70,10 +66,11 @@ public class CinemaReservationService {
         return cinema.getSeat(seatNumber);
     }
 
-    public void getAvailableSeats(String cinemaName) {
+    public Set<Seat> getAvailableSeats(String cinemaName) {
         Cinema cinema = cinemas.get(cinemaName);
-
+        if (cinema == null) {
+            return Collections.emptySet();
+        }
+        return cinema.getAvailableSeats();
     }
-
-
 }

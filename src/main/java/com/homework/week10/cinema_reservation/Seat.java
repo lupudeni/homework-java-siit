@@ -1,6 +1,5 @@
 package com.homework.week10.cinema_reservation;
 
-
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,13 +11,9 @@ public class Seat {
     private boolean reserved;
 
 
-    public Seat(String seatNumber, BigDecimal cinemaPrice) {
+    public Seat(String seatNumber, BigDecimal seatPrice) {
         this.seatNumber = seatNumber;
-        if (CinemaReservationService.PREMIUM_SEATS.contains(seatNumber)) {
-            this.price = cinemaPrice.multiply(new BigDecimal("1.1"));
-        } else {
-            this.price = cinemaPrice;
-        }
+        this.price = seatPrice;
     }
 
     public boolean isReserved() {
