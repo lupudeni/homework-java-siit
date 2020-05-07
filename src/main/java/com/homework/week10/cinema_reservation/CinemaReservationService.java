@@ -28,8 +28,10 @@ public class CinemaReservationService {
         this.cinemas = new HashMap<>();
     }
 
-    public void addCinema(String name, BigDecimal cinemaPrice) {
-        cinemas.put(name, new Cinema(name, cinemaPrice));
+    public Cinema addCinema(String name, BigDecimal cinemaPrice) {
+        Cinema cinema = new Cinema(name, cinemaPrice);
+        cinemas.put(name, cinema);
+        return cinema;
     }
 
     public Cinema removeCinema(String name) {

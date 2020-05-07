@@ -35,7 +35,7 @@ public class Cinema {
         }
     }
 
-    private BigDecimal generatePrice(String seatNumber, BigDecimal cinemaPrice) {
+    BigDecimal generatePrice(String seatNumber, BigDecimal cinemaPrice) {
         if (CinemaReservationService.PREMIUM_SEATS.contains(seatNumber)) {
             return cinemaPrice.multiply(new BigDecimal("1.1"));
         } else {
