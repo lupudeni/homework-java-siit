@@ -1,30 +1,35 @@
 package com.homework.week10.cinema_reservation;
 
-import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-@EqualsAndHashCode
 public class Cinema {
-    private final String cinemaName;
-    private final Set<Seat> seats;
-    private final BigDecimal cinemaBasicPrice;
+    private String name;
+    private Map<String, Seat> seats;
+    private BigDecimal cinemaPrice;
 
-    public Cinema(String cinemaName, BigDecimal cinemaBasicPrice) {
-        this.cinemaName = cinemaName;
-        this.cinemaBasicPrice = cinemaBasicPrice;
-        this.seats = new HashSet<Seat>();
+    public Cinema(String cinemaName, BigDecimal cinemaPrice) {
+        this.name = cinemaName;
+        this.seats = new HashMap<>();
 
         for(char ch = 'A'; ch <= 'J'; ch++) {
             for (int i = 1; i <= 10; i++) {
-                seats.add(new Seat("" + ch + i, cinemaBasicPrice));
+                String seatNr = "" + ch + i;
+                seats.put(seatNr, new Seat(seatNr, cinemaPrice));
             }
         }
     }
 
-    public Set<Seat> getSeats() {
-        return new HashSet<Seat>(this.seats);
+    public Seat getSeat(String seatNr) {
+       return seats.get(seatNr);
     }
+
+    public Map<String, Seat> getSeats() {
+        return seats;
+    }
+
+
 }
