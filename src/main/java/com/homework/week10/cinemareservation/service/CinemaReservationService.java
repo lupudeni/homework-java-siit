@@ -2,11 +2,9 @@ package com.homework.week10.cinemareservation.service;
 
 import com.homework.exception.EntityNotFoundException;
 import com.homework.util.ActionStatus;
-import com.homework.week10.cinemareservation.entity.Cinema;
 import com.homework.week10.cinemareservation.entity.Seat;
-import com.homework.week10.cinemareservation.repository.CinemaRepository;
 
-import java.math.BigDecimal;
+
 import java.util.*;
 
 /**
@@ -25,7 +23,15 @@ public class CinemaReservationService {
     public static final String RESERVATION_FAILED = "Reservation failed";
     public static final String RESERVATION_DELETED = "Reservation successfully deleted";
     public static final String NO_RESERVATION = "No reservation found.";
-    private final CinemaService cinemaService = new CinemaService();
+    private final CinemaService cinemaService;
+
+    public CinemaReservationService() {
+        cinemaService = new CinemaService();
+    }
+
+    public CinemaReservationService(CinemaService cinemaService) {
+        this.cinemaService = cinemaService;
+    }
 
     public String reserveSeatAtCinema(String cinemaName, String seatNumber) {
         Seat seat;
