@@ -1,4 +1,4 @@
-package com.homework.week10.cinema_reservation;
+package com.homework.week10.cinemareservation;
 
 import java.math.BigDecimal;
 import java.util.*;

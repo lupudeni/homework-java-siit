@@ -1,4 +1,4 @@
-package com.homework.week10.cinema_reservation;
+package com.homework.week10.cinemareservation;
 
 import org.junit.Before;
 import org.junit.Test;
