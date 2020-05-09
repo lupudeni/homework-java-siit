@@ -1,5 +1,7 @@
 package com.homework.week10.cinemareservation.service;
 
+import com.homework.exception.EntityNotFoundException;
+import com.homework.util.ActionStatus;
 import com.homework.week10.cinemareservation.entity.Cinema;
 import com.homework.week10.cinemareservation.entity.Seat;
 import com.homework.week10.cinemareservation.repository.CinemaRepository;
@@ -23,39 +25,43 @@ public class CinemaReservationService {
     public static final String RESERVATION_FAILED = "Reservation failed";
     public static final String RESERVATION_DELETED = "Reservation successfully deleted";
     public static final String NO_RESERVATION = "No reservation found.";
-    private final CinemaRepository cinemaRepository = new CinemaRepository();
+    private final CinemaService cinemaService = new CinemaService();
 
     public String reserveSeatAtCinema(String cinemaName, String seatNumber) {
-        Seat seat = getSeatByCinema(cinemaName, seatNumber);
-        if (seat == null || seat.isReserved()) {
-            return RESERVATION_FAILED;
+        Seat seat;
+        try {
+            seat = cinemaService.getSeatByCinema(cinemaName, seatNumber);
+            if (seat.isReserved()) {
+                return RESERVATION_FAILED;
+            }
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
+            return RESERVATION_FAILED + " : " + e.getMessage();
         }
         seat.setReserved(true);
         return RESERVATION_COMPLETE;
     }
 
     public String deleteReservation(String cinemaName, String seatNumber) {
-        Seat seat = getSeatByCinema(cinemaName, seatNumber);
-        if (seat == null || !seat.isReserved()) {
-            return NO_RESERVATION;
+        Seat seat;
+        try {
+            seat = cinemaService.getSeatByCinema(cinemaName, seatNumber);
+            if (!seat.isReserved()) {
+                return NO_RESERVATION;
+            }
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
+            return NO_RESERVATION + " : " +  e.getMessage();
         }
-        seat.setReserved(false);
+        seat.setReserved(true);
         return RESERVATION_DELETED;
     }
 
-    public Seat getSeatByCinema(String cinemaName, String seatNumber) {
-        Cinema cinema = cinemas.get(cinemaName);
-        if (cinema == null) {
-            return null;
+    public String getAvailableSeats(String cinemaName) {
+        Set<Seat> availableSeats;
+        try {
+            availableSeats = cinemaService.getAvailableSeats(cinemaName);
+        } catch (IllegalArgumentException | EntityNotFoundException e) {
+            return ActionStatus.FAIL + " : " + e.getMessage();
         }
-        return cinema.getSeat(seatNumber);
-    }
-
-    public Set<Seat> getAvailableSeats(String cinemaName) {
-        Cinema cinema = cinemas.get(cinemaName);
-        if (cinema == null) {
-            return Collections.emptySet();
-        }
-        return cinema.getAvailableSeats();
+        return availableSeats.toString();
     }
 }

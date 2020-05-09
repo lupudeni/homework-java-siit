@@ -1,4 +1,4 @@
-package com.homework.week10.electronicvote.exception;
+package com.homework.exception;
 
 public class EntityNotFoundException extends Exception {
     public EntityNotFoundException(String message) {

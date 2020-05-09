@@ -16,14 +16,6 @@ public class CinemaRepository {
         populateCinemaDataBase();
     }
 
-    //    public Cinema addCinema(String name, BigDecimal cinemaPrice) {
-//        Cinema cinema = new Cinema(name, cinemaPrice);
-//        cinemas.put(name, cinema);
-//        return cinema;
-//    }
-//    public Cinema removeCinemaByName(String name) {
-//        return cinemas.remove(name);
-//    }
 
     private void populateCinemaDataBase() {
         cinemas.put("IMAX", new Cinema("IMAX", new BigDecimal("30")));
@@ -31,5 +23,9 @@ public class CinemaRepository {
         cinemas.put("CineMagia", new Cinema("CineMagia", new BigDecimal("20")));
         cinemas.put("3DSuperCinema", new Cinema("3DSuperCinema", new BigDecimal("25")));
         cinemas.put("CineGold", new Cinema("CineGold", new BigDecimal("27")));
+    }
+
+    public Cinema getCinemaByName(String name) {
+       return cinemas.get(name);
     }
 }

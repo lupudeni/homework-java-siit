@@ -2,7 +2,7 @@ package com.homework.week10.electronicvote.service;
 
 import com.homework.util.ActionStatus;
 import com.homework.week10.electronicvote.entity.Citizen;
-import com.homework.week10.electronicvote.exception.EntityNotFoundException;
+import com.homework.exception.EntityNotFoundException;
 
 import java.util.Map;
 

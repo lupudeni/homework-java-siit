@@ -1,6 +1,7 @@
 package com.homework.week10.cinemareservation.entity;
 
 
+import com.homework.week10.cinemareservation.repository.CinemaRepository;
 import com.homework.week10.cinemareservation.service.CinemaReservationService;
 
 import java.math.BigDecimal;
@@ -38,7 +39,7 @@ public class Cinema {
     }
 
     BigDecimal generatePrice(String seatNumber, BigDecimal cinemaPrice) {
-        if (CinemaReservationService.PREMIUM_SEATS.contains(seatNumber)) {
+        if (CinemaRepository.PREMIUM_SEATS.contains(seatNumber)) {
             return cinemaPrice.multiply(new BigDecimal("1.1"));
         } else {
             return cinemaPrice;

@@ -26,8 +26,8 @@ public class CinemaReservationServiceTest {
     @Test
     public void given_Valid_Name_And_Unreserved_Seat_Number_When_Reserve_Seat_At_Cinema_Then_Return_Reservation_Complete() {
         //Given
-        Cinema cinema = sut.addCinema("IMAX", new BigDecimal("30"));
-        Seat seat = cinema.getSeat("A1");
+//        Cinema cinema = sut.addCinema("IMAX", new BigDecimal("30"));
+//        Seat seat = cinema.getSeat("A1");
 
         //When
         String reservationStatus = sut.reserveSeatAtCinema("IMAX", "A1");

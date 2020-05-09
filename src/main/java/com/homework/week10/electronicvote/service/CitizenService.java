@@ -1,7 +1,7 @@
 package com.homework.week10.electronicvote.service;
 
 import com.homework.week10.electronicvote.entity.Citizen;
-import com.homework.week10.electronicvote.exception.EntityNotFoundException;
+import com.homework.exception.EntityNotFoundException;
 import com.homework.week10.electronicvote.repository.CitizenRepository;
 
 public class CitizenService {
