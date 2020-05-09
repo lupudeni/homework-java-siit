@@ -1,5 +1,7 @@
-package com.homework.week10.cinemareservation;
+package com.homework.week10.cinemareservation.entity;
 
+
+import com.homework.week10.cinemareservation.service.CinemaReservationService;
 
 import java.math.BigDecimal;
 import java.util.HashMap;

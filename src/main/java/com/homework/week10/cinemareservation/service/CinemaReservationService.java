@@ -1,4 +1,8 @@
-package com.homework.week10.cinemareservation;
+package com.homework.week10.cinemareservation.service;
+
+import com.homework.week10.cinemareservation.entity.Cinema;
+import com.homework.week10.cinemareservation.entity.Seat;
+import com.homework.week10.cinemareservation.repository.CinemaRepository;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -19,28 +23,7 @@ public class CinemaReservationService {
     public static final String RESERVATION_FAILED = "Reservation failed";
     public static final String RESERVATION_DELETED = "Reservation successfully deleted";
     public static final String NO_RESERVATION = "No reservation found.";
-    public static final List<String> PREMIUM_SEATS = Arrays.asList("F3", "F4","F5","F6","F7","F8","G3","G4","G5","G6","G7","G8");
-
-
-    private final Map<String, Cinema> cinemas;
-
-    public CinemaReservationService() {
-        this.cinemas = new HashMap<>();
-    }
-
-    public Cinema addCinema(String name, BigDecimal cinemaPrice) {
-        Cinema cinema = new Cinema(name, cinemaPrice);
-        cinemas.put(name, cinema);
-        return cinema;
-    }
-
-    public Cinema removeCinema(String name) {
-        return cinemas.remove(name);
-    }
-
-    public Map<String, Cinema> getCinemas() {
-        return new HashMap<>(cinemas);
-    }
+    private final CinemaRepository cinemaRepository = new CinemaRepository();
 
     public String reserveSeatAtCinema(String cinemaName, String seatNumber) {
         Seat seat = getSeatByCinema(cinemaName, seatNumber);

@@ -1,4 +1,4 @@
-package com.homework.week10.cinemareservation;
+package com.homework.week10.cinemareservation.entity;
 
 import lombok.Data;
 

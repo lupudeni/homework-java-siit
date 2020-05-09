@@ -1,5 +1,8 @@
 package com.homework.week10.cinemareservation;
 
+import com.homework.week10.cinemareservation.entity.Cinema;
+import com.homework.week10.cinemareservation.entity.Seat;
+import com.homework.week10.cinemareservation.service.CinemaReservationService;
 import org.junit.Before;
 import org.junit.Test;
 
