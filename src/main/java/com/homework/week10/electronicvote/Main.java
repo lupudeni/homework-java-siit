@@ -1,13 +1,13 @@
 package com.homework.week10.electronicvote;
 
-import java.io.IOException;
+import com.homework.week10.electronicvote.service.ElectronicVoteService;
+
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        String citizenText = "src/main/java/com/homework/week10/electronicvote/citizens.txt";
-        String candidatesText = "src/main/java/com/homework/week10/electronicvote/candidates.txt";
-        ElectronicVoteService electronicVoteService = new ElectronicVoteService(citizenText, candidatesText);
+
+    public static void main(String[] args) {
+        ElectronicVoteService electronicVoteService = new ElectronicVoteService();
         runApp(electronicVoteService);
     }
 
@@ -26,8 +26,11 @@ public class Main {
             int choice = input.nextInt();
             switch (choice) {
                 case 1:
-                    String cnp = input.next();
-                    String candidateName = input.nextLine();
+                    Scanner textInput = new Scanner(System.in);
+                    System.out.println("Enter citizen CNP:");
+                    String cnp = textInput.nextLine();
+                    System.out.println("Enter candidate name:");
+                    String candidateName = textInput.nextLine();
                     System.out.println(electronicVoteService.vote(cnp, candidateName));
                     break;
                 case 2:
