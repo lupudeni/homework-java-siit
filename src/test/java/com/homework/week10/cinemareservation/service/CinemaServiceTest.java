@@ -17,7 +17,7 @@ public class CinemaServiceTest {
     private CinemaService sut;
 
     @Mock
-    CinemaRepository cinemaRepository = new CinemaRepository();
+    CinemaRepository cinemaRepository;
 
     @Before
     public void setUp() {

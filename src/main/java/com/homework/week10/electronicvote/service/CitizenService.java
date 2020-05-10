@@ -5,7 +5,15 @@ import com.homework.exception.EntityNotFoundException;
 import com.homework.week10.electronicvote.repository.CitizenRepository;
 
 public class CitizenService {
-    private final CitizenRepository citizenRepository = new CitizenRepository();
+    private final CitizenRepository citizenRepository;
+
+    public CitizenService() {
+        citizenRepository = new CitizenRepository();
+    }
+
+    public CitizenService(CitizenRepository citizenRepository) {
+        this.citizenRepository = citizenRepository;
+    }
 
     public Citizen getCitizenByCNP(String cnp) throws EntityNotFoundException {
         if (cnp == null) {

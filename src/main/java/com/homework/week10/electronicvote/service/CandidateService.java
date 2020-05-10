@@ -6,16 +6,24 @@ import com.homework.week10.electronicvote.repository.CandidateRepository;
 import java.util.Map;
 
 public class CandidateService {
-    private final CandidateRepository candidateRepository = new CandidateRepository();
+    private final CandidateRepository candidateRepository;
 
-    public void voteCandidate(String candidateName) throws EntityNotFoundException {
+    public CandidateService() {
+        candidateRepository = new CandidateRepository();
+    }
+
+    public CandidateService(CandidateRepository candidateRepository) {
+        this.candidateRepository = candidateRepository;
+    }
+
+    public Integer voteCandidate(String candidateName) throws EntityNotFoundException {
         if (candidateName == null) {
             throw new IllegalArgumentException("Candidate name must not be null.");
         }
         if (!candidateRepository.exists(candidateName)) {
             throw new EntityNotFoundException("No candidate with name " + candidateName + " found.");
         }
-        candidateRepository.incrementVotes(candidateName);
+        return candidateRepository.incrementVotes(candidateName);
     }
 
     public Map<String, Integer> getPoll() {

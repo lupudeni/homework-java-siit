@@ -14,7 +14,7 @@ public class CinemaReservationServiceTest {
 
     CinemaReservationService sut;
     @Mock
-    CinemaService cinemaService = new CinemaService();
+    CinemaService cinemaService;
 
     @Before
     public void setUp() {

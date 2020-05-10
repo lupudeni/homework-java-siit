@@ -33,8 +33,8 @@ public class CandidateRepository {
         return candidateDataBase.containsKey(name);
     }
 
-    public void incrementVotes(String candidateName) {
-        candidateDataBase.compute(candidateName, (name, votes) -> votes == null ? 0 : votes + 1);
+    public Integer incrementVotes(String candidateName) {
+        return candidateDataBase.compute(candidateName, (name, votes) -> votes == null ? 0 : votes + 1);
     }
     public Map<String, Integer> getPoll() {
         return new HashMap<>(candidateDataBase);
