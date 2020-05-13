@@ -16,7 +16,11 @@ public class Bracket {
             if (bracketsMap.containsValue(bracket)) {
                 stack.push(bracket);
             } else if (bracketsMap.containsKey(bracket)) {
+                if (stack.size() == 0) {
+                    return false;
+                }
                 String lastBracket = stack.peek();
+
                 if (bracketsMap.get(bracket).equals(lastBracket)) {
                     stack.pop();
                 } else {

@@ -84,4 +84,17 @@ public class BracketTest {
         //Then
         assertThat(areBracketsBalanced).isFalse();
     }
+
+    @Test
+    public void given_String_With_Inside_Out_Brackets_When_Calling_Is_Balanced_Then_Return_True() {
+        //Given
+        String s = "}])([{";
+
+        //When
+        boolean areBracketsBalanced = sut.isBalanced(s);
+
+        //Then
+        assertThat(areBracketsBalanced).isFalse();
+    }
+
 }
