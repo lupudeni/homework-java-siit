@@ -26,6 +26,13 @@ public class CloudScrobblingMusicLibrary implements MusicLibrary {
         return cloudScrobblingService.retrieveTimesPlayedFromCloud(song);
     }
 
+    @Override
+    public Rating ratingOf(Song song) {
+        CloudScrobblingService cloudScrobblingService = new CloudScrobblingService();
+        int score = cloudScrobblingService.retrieveScrobbledRatingOf(song);
+        return new Rating(score);
+    }
+
     public static final class CloudScrobblingService {
 
         public int retrieveTimesPlayedFromCloud(Song song) {
@@ -59,5 +66,6 @@ public class CloudScrobblingMusicLibrary implements MusicLibrary {
                     new Song("Desolation Row", "Bob Dylan"),
                     new Song("Eleanor Rigby", "The Beatles"));
         }
+
     }
 }

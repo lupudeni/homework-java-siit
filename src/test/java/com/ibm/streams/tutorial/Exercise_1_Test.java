@@ -4,7 +4,7 @@ import com.ibm.streams.tutorial.exercise1.Color;
 import com.ibm.streams.tutorial.exercise1.Shape;
 import com.ibm.streams.tutorial.exercise1.Shapes;
 import com.ibm.streams.tutorial.util.FeatureMatchers;
-import org.assertj.core.api.Assertions;
+
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Test;

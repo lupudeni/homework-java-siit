@@ -176,8 +176,8 @@ public class Exercise_5_Test {
 
 //        UNCOMMENT THE LINES BELOW
 //        Until the sortedByArtist method is added to MusicLibrary, there will be a compiler error.
-//        assertThat(library.sortedByArtist(), containsSongsBy("Bob Dylan", "Creedence Clearwater Revival",
-//                                                             "Paulo Nutini", "Sam Cooke", "The Beatles"));
+        assertThat(library.sortedByArtist(), containsSongsBy("Bob Dylan", "Creedence Clearwater Revival",
+                                                             "Paulo Nutini", "Sam Cooke", "The Beatles"));
         assertThat(MusicLibrary.class, HasConcreteMethod.called("sortedByArtist"));
         assertThat(LocalFilesystemMusicLibrary.class, not(HasConcreteMethod.called("sortedByArtist")));
     }
