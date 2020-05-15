@@ -6,13 +6,16 @@ import com.homework.week10.cinemareservation.entity.Seat;
 import com.homework.week10.cinemareservation.repository.CinemaRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CinemaServiceTest {
     private CinemaService sut;
 
