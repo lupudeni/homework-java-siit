@@ -57,7 +57,7 @@ public class CinemaReservationService {
         } catch (IllegalArgumentException | EntityNotFoundException e) {
             return NO_RESERVATION + " : " +  e.getMessage();
         }
-        seat.setReserved(true);
+        seat.setReserved(false);
         return RESERVATION_DELETED;
     }
 

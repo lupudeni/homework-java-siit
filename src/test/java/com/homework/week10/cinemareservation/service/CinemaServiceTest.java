@@ -8,9 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
@@ -20,7 +22,7 @@ public class CinemaServiceTest {
     private CinemaService sut;
 
     @Mock
-    CinemaRepository cinemaRepository;
+    private CinemaRepository cinemaRepository;
 
     @Before
     public void setUp() {
@@ -45,6 +47,7 @@ public class CinemaServiceTest {
         //Given
         String seatNumber = "F3";
         BigDecimal cinemaPrice = new BigDecimal("20");
+        Mockito.when(cinemaRepository.isPremiumSeat(seatNumber)).thenReturn(true);
 
         //When
         BigDecimal seatPrice = sut.generatePrice(seatNumber, cinemaPrice);
@@ -64,7 +67,7 @@ public class CinemaServiceTest {
         Cinema cinema = sut.addCinema(name, price);
 
         //Then
-        assertThat(cinemaRepository.getCinemaByName("IMAX")).isEqualTo(cinema);
+        Mockito.verify(cinemaRepository, Mockito.times(1)).addCinema(cinema);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -83,8 +86,9 @@ public class CinemaServiceTest {
         String cinemaName = "IMAX";
         String seatNumber = "A1";
         BigDecimal price = new BigDecimal("20");
+        Map<String, Seat> seats = Map.of(seatNumber, new Seat(seatNumber, price));
 
-        sut.addCinema(cinemaName, price);
+        Mockito.when(cinemaRepository.getCinemaByName(cinemaName)).thenReturn(new Cinema(cinemaName, seats));
 
         //When
         Seat seat = sut.getSeatByCinema(cinemaName, seatNumber);
@@ -135,34 +139,43 @@ public class CinemaServiceTest {
     }
 
     @Test
-    public void given_Existent_Cinema_Name_And_No_Reserved_Seats_When_Get_Available_Seats_Then_Return_Set_Of_Size_100() throws EntityNotFoundException {
+    public void given_Existent_Cinema_Name_And_All_Available_Seats_When_Get_Available_Seats_Then_Return_Set_Of_Size_1() throws EntityNotFoundException {
         //Given
         String cinemaName = "IMAX";
+        String seatNumber = "A1";
         BigDecimal price = new BigDecimal("20");
 
-        sut.addCinema(cinemaName, price);
+        Seat seat = new Seat(seatNumber, price);
+        Map<String, Seat> seats = Map.of(seatNumber, seat);
+        Mockito.when(cinemaRepository.getCinemaByName(cinemaName)).thenReturn(new Cinema(cinemaName, seats));
 
         //When
         int size = sut.getAvailableSeats(cinemaName).size();
 
         //Then
-        assertThat(size).isEqualTo(100);
+        assertThat(size).isEqualTo(1);
     }
 
     @Test
-    public void given_Existent_Cinema_Name_And_One_Reserved_Seat_When_Get_Available_Seats_Then_Return_Set_Of_Size_99() throws EntityNotFoundException {
+    public void given_Existent_Cinema_Name_And_One_Reserved_Seat_When_Get_Available_Seats_Then_Return_Set_Of_Size_1() throws EntityNotFoundException {
         //Given
         String cinemaName = "IMAX";
         BigDecimal price = new BigDecimal("20");
+        String seatNumber1 = "A1";
+        String seatNumber2 = "A2";
 
-        Cinema cinema = sut.addCinema(cinemaName, price);
-        cinema.getSeat("A1").setReserved(true);
+        Seat seat1 = new Seat(seatNumber1, price);
+        Seat seat2 = new Seat(seatNumber2, price);
+        seat2.setReserved(true);
+
+        Map<String, Seat> seats = Map.of(seatNumber1, seat1, seatNumber2, seat2);
+        Mockito.when(cinemaRepository.getCinemaByName(cinemaName)).thenReturn(new Cinema(cinemaName, seats));
 
         //When
         int size = sut.getAvailableSeats(cinemaName).size();
 
         //Then
-        assertThat(size).isEqualTo(99);
+        assertThat(size).isEqualTo(1);
     }
 
     @Test
@@ -170,20 +183,17 @@ public class CinemaServiceTest {
         //Given
         String cinemaName = "IMAX";
         BigDecimal price = new BigDecimal("20");
+        String seatNumber = "A1";
+        Seat seat = new Seat(seatNumber, price);
+        seat.setReserved(true);
+        Map<String, Seat> seats = Map.of(seatNumber, seat);
+        Mockito.when(cinemaRepository.getCinemaByName(cinemaName)).thenReturn(new Cinema(cinemaName, seats));
 
-        Cinema cinema = sut.addCinema(cinemaName, price);
-
-        for (char ch = 'A'; ch <= 'J'; ch++) {
-            for (int i = 1; i <= 10; i++) {
-                String seatNr = "" + ch + i;
-                cinema.getSeat(seatNr).setReserved(true);
-            }
-        }
         //When
-        Set<Seat> seats = sut.getAvailableSeats(cinemaName);
+        Set<Seat> returnedSeats = sut.getAvailableSeats(cinemaName);
 
         //Then
-        assertThat(seats).isEmpty();
+        assertThat(returnedSeats).isEmpty();
     }
 
     @Test(expected = IllegalArgumentException.class)
