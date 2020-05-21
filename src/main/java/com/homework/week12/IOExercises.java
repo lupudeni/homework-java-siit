@@ -28,7 +28,6 @@ public class IOExercises {
                 .collect(Collectors.toList());
     }
 
-
     //2. Implement a method to get specific files by extensions from a specified folder.
 
     List<String> getFilesFromFolderByExtension(Path folder, String extension) throws IOException {
