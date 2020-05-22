@@ -21,7 +21,9 @@ public class IOExercises {
     //1. Implement a method to get a list of all file/directory names from the given.
 
     List<String> getFileOrDirectoriesNamesFromGiven(Path path) throws IOException {
-
+        if (path == null) {
+            return Collections.emptyList();
+        }
         return Files.walk(path, 1)
                 .map(Path::getFileName)
                 .map(Path::toString)
@@ -31,6 +33,9 @@ public class IOExercises {
     //2. Implement a method to get specific files by extensions from a specified folder.
 
     List<String> getFilesFromFolderByExtension(Path folder, String extension) throws IOException {
+        if (folder == null || extension == null) {
+            return Collections.emptyList();
+        }
         return Files.walk(folder, 1)
                 .map(Path::getFileName)
                 .map(Path::toString)
@@ -41,22 +46,30 @@ public class IOExercises {
     //3. Implement a method to check if a file or directory specified by pathname exists or not.
 
     boolean checkIfFileExists(Path path) {
+        if (path == null) {
+            return false;
+        }
         return Files.exists(path);
     }
 
     //4. Implement a method to check if a file or directory has read and write permission.
 
     boolean hasReadAndWritePermission(Path path) {
+        if (path == null) {
+            return false;
+        }
         return (Files.isReadable(path) && Files.isWritable(path));
     }
 
     //5. Implement a method to check if given pathname is a directory or a file.
     String isFileOrDirectory(Path path) {
-        if (Files.isDirectory(path)) {
-            return "Directory";
-        }
-        if (Files.isRegularFile(path)) {
-            return "File";
+        if (path != null) {
+            if (Files.isDirectory(path)) {
+                return "Directory";
+            }
+            if (Files.isRegularFile(path)) {
+                return "File";
+            }
         }
         return "No match";
     }
@@ -64,12 +77,19 @@ public class IOExercises {
     //6. Implement a method to compare two files lexicographically.
 
     int compareLexicographically(File file1, File file2) {
-        return file1.getName().compareTo(file2.getName());
+        try {
+            return file1.getName().compareTo(file2.getName());
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Parameters cannot be null");
+        }
     }
 
     //7. Implement a method to get last modified time of a file.
 
     String getLastModifiedTime(File file) {
+        if (file == null || file.lastModified() == 0L) {
+            return "File does not exist";
+        }
         return new SimpleDateFormat("dd/MM/yyyy 'at' hh:mm:ss")
                 .format(file.lastModified());
     }
@@ -88,6 +108,9 @@ public class IOExercises {
     //9. Implement a method to get file size in bytes, kb, mb.
 
     String getFileSize(File file) {
+        if (file == null || !file.exists()) {
+            return "File not found";
+        }
         long length = file.length();
         return length + " bytes" +
                 "\n" + (length / 1024) + " kb" +
@@ -99,18 +122,21 @@ public class IOExercises {
     byte[] readIntoByteArray(File file) {
         try (FileInputStream fileInputStream = new FileInputStream(file)) {
             return fileInputStream.readAllBytes();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
-        return new byte[0];
     }
 
 
     //11. Implement a method to read a file content line by line.
 
-    List<String> readFileLineByLine(Path path) throws IOException {
-        return Files.lines(path)
-                .collect(Collectors.toList());
+    List<String> readFileLineByLine(Path path) {
+        try {
+            return Files.lines(path)
+                    .collect(Collectors.toList());
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
+        }
     }
 
     //12. Implement a method to read a plain text file.
@@ -119,10 +145,9 @@ public class IOExercises {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             return reader.lines()
                     .collect(Collectors.joining());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
-        return "";
     }
 
     //13. Implement a method to read a file line by line and store it into a variable.
@@ -132,8 +157,8 @@ public class IOExercises {
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             result = reader.lines()
                     .collect(Collectors.joining());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
         return result;
     }
@@ -145,10 +170,9 @@ public class IOExercises {
             return reader.lines()
                     .collect(Collectors.toList())
                     .toArray(new String[]{});
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
-        return new String[0];
     }
 
     //15. Implement a method to write and read a plain text file.
