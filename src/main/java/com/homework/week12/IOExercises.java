@@ -203,14 +203,15 @@ public class IOExercises {
 
     //16. Implement a method to append text to an existing file.
 
-    boolean appendTextToExistingFile(File file, String text) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            writer.write(text);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
+    String appendTextToExistingFile(File file, String text) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+             BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            writer.append(text);
+            writer.flush();
+            return reader.lines().collect(Collectors.joining());
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
-        return false;
     }
 
     //17. Implement a method to read first 3 lines from a file.
@@ -220,10 +221,9 @@ public class IOExercises {
             return reader.lines()
                     .limit(n)
                     .collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
-        return Collections.emptyList();
     }
 
 
@@ -237,9 +237,8 @@ public class IOExercises {
                     .max(Comparator.comparingInt(String::length))
                     .orElse("");
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
-        return "";
     }
 }

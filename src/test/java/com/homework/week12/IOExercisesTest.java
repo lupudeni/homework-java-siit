@@ -32,14 +32,16 @@ public class IOExercisesTest {
     public static void myFiles() throws IOException {
         Files.createDirectory(TEST_ROOT_PATH.resolve("empty_dir"));
         Path populatedDir = Files.createDirectory(TEST_ROOT_PATH.resolve("populated_dir"));
-        Files.createFile(populatedDir.resolve("File1.txt"));
-        Files.createFile(populatedDir.resolve("File2.txt"));
+        Files.createFile(populatedDir.resolve("File1.txt"));  // an empty txt file
+        Files.createFile(populatedDir.resolve("File2.txt"));  // a txt file with a text on multiple lines
         populateFile2(populatedDir);
-        Files.createFile(populatedDir.resolve("File3.txt"));
+        Files.createFile(populatedDir.resolve("File3.txt"));  // a txt file with a short text
         populateFile3(populatedDir);
-        Files.createFile(populatedDir.resolve("File4.txt"));
-    }
+        Files.createFile(populatedDir.resolve("File4.txt"));  // a txt file for writing and reading
+        Files.createFile(populatedDir.resolve("File5.txt"));  // a txt file for appending with an initial text
+        populateFile5(populatedDir);
 
+    }
 
     private static void populateFile2(Path populatedDir) throws IOException {
         String textFile2 = "We are uncovering better ways of developing\n" +
@@ -61,6 +63,10 @@ public class IOExercisesTest {
         Files.write(populatedDir.resolve("File3.txt"), textFile3.getBytes());
     }
 
+    private static void populateFile5(Path populatedDir) throws IOException {
+        String textFile5 = "Initial Text ";
+        Files.write(populatedDir.resolve("File5.txt"), textFile5.getBytes());
+    }
 
     @AfterClass
     public static void cleanUp() throws IOException {
@@ -69,10 +75,13 @@ public class IOExercisesTest {
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File2.txt"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File3.txt"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File4.txt"));
+        Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File5.txt"));
+        Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("unknown"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir"));
 
     }
 
+    //1
     @Test
     public void given_Files_When_Getting_The_File_Names_Then_Return_List_Of_Names() throws IOException {
         //Given
@@ -118,6 +127,7 @@ public class IOExercisesTest {
         List<String> fileNames = sut.getFileOrDirectoriesNamesFromGiven(path);
     }
 
+    //2
     @Test
     public void given_Files_With_Matching_Extension_When_Get_File_By_Ext_Then_Return_File_List() throws IOException {
         //Given
@@ -167,6 +177,7 @@ public class IOExercisesTest {
         sut.getFilesFromFolderByExtension(path, extension);
     }
 
+    //3
     @Test
     public void given_Existing_Path_When_Check_Existence_Then_Return_True() {
         //Given
@@ -203,6 +214,7 @@ public class IOExercisesTest {
         assertThat(doesExist).isFalse();
     }
 
+    //4
     @Test
     public void given_Read_And_Write_Permission_When_Check_Permission_Then_Return_true() {
         //Given
@@ -258,6 +270,7 @@ public class IOExercisesTest {
         assertThat(hasPermissions).isFalse();
     }
 
+    //5
     @Test
     public void given_File_When_Check_File_Or_Directory_Then_Return_File() {
         //Given
@@ -306,6 +319,7 @@ public class IOExercisesTest {
         assertThat(status).isEqualTo("No match");
     }
 
+    //6
     @Test
     public void given_File1_And_File2_When_Compare_Lexicographically_Then_Return_Negative_Int() {
         //Given
@@ -352,6 +366,7 @@ public class IOExercisesTest {
         sut.compareLexicographically(file1, null);
     }
 
+    //7
     @Test
     public void given_File_When_Get_Last_Modified_Time_Then_Return_Time() {
         //Given
@@ -388,7 +403,10 @@ public class IOExercisesTest {
         assertThat(time).isEqualTo("File does not exist");
     }
 
+    //8
 
+
+    //9
     @Test
     public void given_Empty_File_When_Get_File_Size_Then_Return_Size() {
         //Given
@@ -441,6 +459,7 @@ public class IOExercisesTest {
         assertThat(size).isEqualTo("File not found");
     }
 
+    //10
     @Test
     public void given_Text_File_When_Read_To_Byte_Array_Then_Return_Byte_Array() {
         //Given
@@ -479,6 +498,7 @@ public class IOExercisesTest {
         byte[] result = sut.readIntoByteArray(file);
     }
 
+    //11
     @Test
     public void given_File_When_Read_Line_By_Line_Then_Return_List_Of_String_Lines() {
         //Given
@@ -517,6 +537,7 @@ public class IOExercisesTest {
         sut.readFileLineByLine(path);
     }
 
+    //12
     @Test
     public void given_Plain_Text_File_When_Read_Then_Return_Contents() {
         //Given
@@ -567,6 +588,7 @@ public class IOExercisesTest {
         assertThat(result).isEqualTo("Hello!");
     }
 
+    //13
     @Test
     public void given_Empty_File_When_Read_And_Store_Then_Return_Contents_In_Variable() {
         //Given
@@ -593,6 +615,7 @@ public class IOExercisesTest {
         String result = sut.readLineByLineAndStore(null);
     }
 
+    //14
     @Test
     public void given_File_When_Read_And_Store_In_Array_Then_Return_Array_With_Contents() {
         //Given
@@ -631,10 +654,49 @@ public class IOExercisesTest {
         sut.readLineByLineAndStoreInArray(null);
     }
 
+    //15
 
+
+    //16
+    @Test
+    public void given_File_With_Text_And_Text_When_Append_Text_Return_Updated_Text() {
+        //Given
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File5.txt").toFile();
+        String text = "Appended text";
+
+        //When
+        String result = sut.appendTextToExistingFile(file, text);
+
+        //Then
+        assertThat(result).isEqualTo("Initial Text Appended text");
+    }
 
     @Test
-    public void given_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Return_Lines(){
+    public void given_File_Without_Text_And_Text_When_Append_Text_Return_Updated_Text() {
+        //Given
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File1.txt").toFile();
+        String text = "Appended text";
+
+        //When
+        String result = sut.appendTextToExistingFile(file, text);
+
+        //Then
+        assertThat(result).isEqualTo("Appended text");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void given_Null_File_Without_Text_And_Text_When_Append_Text_Then_Throw_Exception() {
+        //Given
+        File file = null;
+        String text = "Appended text";
+
+        //When
+        sut.appendTextToExistingFile(file, text);
+    }
+
+    //17
+    @Test
+    public void given_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Return_Lines() {
         //Given
         File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File2.txt").toFile();
         int n = 3;
@@ -648,8 +710,9 @@ public class IOExercisesTest {
                 "Through this work we have come to value:"));
     }
 
+
     @Test
-    public void given_Shorter_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Return_Lines(){
+    public void given_Shorter_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Return_Lines() {
         //Given
         File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File3.txt").toFile();
         int n = 3;
@@ -662,7 +725,7 @@ public class IOExercisesTest {
     }
 
     @Test
-    public void given_Empty_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Throw_Exception(){
+    public void given_Empty_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Throw_Exception() {
         //Given
         File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File3.txt").toFile();
         int n = 3;
@@ -675,18 +738,59 @@ public class IOExercisesTest {
     }
 
 
-
-    @Test
-    public void given_Unknown_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Throw_Exception(){
+    @Test(expected = IllegalArgumentException.class)
+    public void given_Unknown_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Throw_Exception() {
         //Given
-        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File3.txt").toFile();
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("unknown").toFile();
         int n = 3;
 
         //When
         List<String> result = sut.readFirstNLines(file, n);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void given_Null_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Throw_Exception() {
+        sut.readFirstNLines(null, 3);
+    }
+
+    @Test
+    public void given_File_When_Find_Longest_Word_Then_Return_Word() {
+        //Given
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File2.txt").toFile();
+
+        //When
+        String result = sut.findLongestWordInTextFile(file);
 
         //Then
-        assertThat(result).isEqualTo(Collections.singletonList("Hello!"));
+
+        assertThat(result).isEqualTo("comprehensive");
+    }
+
+    @Test
+    public void given_Empty_File_When_Find_Longest_Word_Then_Return_Word() {
+        //Given
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File1.txt").toFile();
+
+        //When
+        String result = sut.findLongestWordInTextFile(file);
+
+        //Then
+
+        assertThat(result).isEqualTo("");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void given_Unknown_File_When_Find_Longest_Word_Then_Throw_Exception() {
+        //Given
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("unknown").toFile();
+
+        //When
+        sut.findLongestWordInTextFile(file);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void given_Null_File_When_Find_Longest_Word_Then_Throw_Exception() {
+        sut.findLongestWordInTextFile(null);
     }
 
 

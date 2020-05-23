@@ -1,0 +1,2 @@
+This purpose of this folder is to serve as a root for the mock-up files that are to be used for the testings
+for exercises 1-18. The files are created when @BeforeClass in the testing and deleted @AfterClass.
