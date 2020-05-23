@@ -1,14 +1,11 @@
 package com.homework.week12;
 
-import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -403,9 +400,6 @@ public class IOExercisesTest {
         assertThat(time).isEqualTo("File does not exist");
     }
 
-    //8
-
-
     //9
     @Test
     public void given_Empty_File_When_Get_File_Size_Then_Return_Size() {
@@ -656,6 +650,28 @@ public class IOExercisesTest {
 
     //15
 
+    @Test
+    public void given_Text_File_When_Write_And_Read_Then_Return_File_Content() {
+        //Given
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File4.txt").toFile();
+        String text = "Hello world!";
+
+        //When
+        String resultAfterWriteAndRead = sut.writeAndReadPlainTextFile(file, text);
+
+        //Then
+        assertThat(resultAfterWriteAndRead).isEqualTo("Hello world!");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void given_Null_When_Write_And_Read_Then_Throw_Exception() {
+        //Given
+        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File4.txt").toFile();
+        String text = null;
+
+        //When
+        String resultAfterWriteAndRead = sut.writeAndReadPlainTextFile(file, text);
+    }
 
     //16
     @Test
@@ -669,19 +685,6 @@ public class IOExercisesTest {
 
         //Then
         assertThat(result).isEqualTo("Initial Text Appended text");
-    }
-
-    @Test
-    public void given_File_Without_Text_And_Text_When_Append_Text_Return_Updated_Text() {
-        //Given
-        File file = TEST_ROOT_PATH.resolve("populated_dir").resolve("File1.txt").toFile();
-        String text = "Appended text";
-
-        //When
-        String result = sut.appendTextToExistingFile(file, text);
-
-        //Then
-        assertThat(result).isEqualTo("Appended text");
     }
 
     @Test(expected = IllegalArgumentException.class)

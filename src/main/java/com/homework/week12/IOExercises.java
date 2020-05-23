@@ -177,28 +177,17 @@ public class IOExercises {
 
     //15. Implement a method to write and read a plain text file.
 
-    String writeAndReadPlainTextFile(File file) {
+    String writeAndReadPlainTextFile(File file, String text) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file));
              BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            writer.write("We are uncovering better ways of developing\n" +
-                    "software by doing it and helping others do it.\n" +
-                    "Through this work we have come to value:\n" +
-                    "\n" +
-                    "Individuals and interactions over processes and tools\n" +
-                    "Working software over comprehensive documentation\n" +
-                    "Customer collaboration over contract negotiation\n" +
-                    "Responding to change over following a plan\n" +
-                    "\n" +
-                    "That is, while there is value in the items on\n" +
-                    "the right, we value the items on the left more.");
-
+            writer.write(text);
+            writer.flush();
             return reader.lines()
                     .collect(Collectors.joining());
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | NullPointerException e) {
+            throw new IllegalArgumentException("Invalid or Nonexistent parameter");
         }
-        return "";
     }
 
     //16. Implement a method to append text to an existing file.
