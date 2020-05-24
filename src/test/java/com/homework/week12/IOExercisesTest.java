@@ -75,7 +75,6 @@ public class IOExercisesTest {
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File5.txt"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("unknown"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir"));
-
     }
 
     //1
@@ -740,7 +739,6 @@ public class IOExercisesTest {
         assertThat(result).isEqualTo(Collections.singletonList("Hello!"));
     }
 
-
     @Test(expected = IllegalArgumentException.class)
     public void given_Unknown_File_And_Nr_Of_Lines_When_Read_First_N_Nr_Of_Lines_Then_Throw_Exception() {
         //Given
@@ -795,6 +793,4 @@ public class IOExercisesTest {
     public void given_Null_File_When_Find_Longest_Word_Then_Throw_Exception() {
         sut.findLongestWordInTextFile(null);
     }
-
-
 }

@@ -18,7 +18,7 @@ public class ElectronicBanking {
         this.stringManipulation = stringManipulation;
     }
 
-    Card logIn(String cardNumber, String pin) {
+    public Card logIn(String cardNumber, String pin) {
         Card card = dataBase.getCardByNumber(cardNumber);
         if ((card == null) || !(isPinValid(card, pin))) {
             return null;
