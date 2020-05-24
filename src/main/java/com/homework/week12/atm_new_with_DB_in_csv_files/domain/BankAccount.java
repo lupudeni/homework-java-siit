@@ -1,14 +1,17 @@
 package com.homework.week12.atm_new_with_DB_in_csv_files.domain;
 
-import com.homework.week5.atm.Card;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
-
+@Builder
+@EqualsAndHashCode
 public class BankAccount {
+    private String accountID;
     private BigDecimal balance;
-    private com.homework.week5.atm.Card card;
+    private Card card;
 
-    public BankAccount(BigDecimal balance, com.homework.week5.atm.Card card) {
+    public BankAccount(BigDecimal balance, Card card) {
         this.balance = balance;
         this.card = card;
     }
@@ -21,8 +24,12 @@ public class BankAccount {
         this.balance = balance;
     }
 
-    public com.homework.week5.atm.Card getCard() {
+    public Card getCard() {
         return card;
+    }
+
+    public String getAccountID() {
+        return accountID;
     }
 
     public void setCard(Card card) {

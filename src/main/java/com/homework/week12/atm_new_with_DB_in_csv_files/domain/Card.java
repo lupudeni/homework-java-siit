@@ -1,23 +1,25 @@
 package com.homework.week12.atm_new_with_DB_in_csv_files.domain;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 
+@Builder
 @EqualsAndHashCode
 public class Card {
-    private String number;
+    private String cardID;
     private String pin;
 
-    public Card(String number, String pin) {
-        this.number = number;
+    public Card(String cardID, String pin) {
+        this.cardID = cardID;
         this.pin = pin;
     }
 
-    public String getNumber() {
-        return number;
+    public String getCardID() {
+        return cardID;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setCardID(String cardID) {
+        this.cardID = cardID;
     }
 
     public String getPin() {
