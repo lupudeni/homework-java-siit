@@ -9,37 +9,61 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BankAccountRepository {
 
-    private static final Path BANK_ACCOUNT_DB = Paths.get("atm_db", "bankAccountDB.csv");
-
+    private final Path bankAccountDb;
 
     private Map<String, BankAccount> cardIdToAccountMap;
+    private Map<String, List<BankAccount>> userIdToAccounts;
 
-    public BankAccountRepository() {
+    public BankAccountRepository(Map<String, Card> cardMap) {
+        this(cardMap, Paths.get("atm_db", "bankAccountDB.csv"));
+    }
+
+    public BankAccountRepository(Map<String, Card> cardMap, Path bankAccountDb) {
+        this.bankAccountDb = bankAccountDb;
+        populateDB(cardMap);
+    }
+
+    private void populateDB(Map<String, Card> cardMap) {
+        userIdToAccounts = new HashMap<>();
         try {
-            populateDB();
-        } catch (IOException e) {
-            throw new UncheckedIOException("Could not access " + BANK_ACCOUNT_DB.toAbsolutePath().normalize().toString(), e);
+            cardIdToAccountMap = Files.lines(bankAccountDb)
+                    .map(line -> line.split(","))
+                    .skip(1)
+                    .map(line -> {
+                        BankAccount account = BankAccount.builder()
+                                .accountID(line[0])
+                                .balance(new BigDecimal(line[1]))
+                                .card(cardMap.get(line[2]))
+                                .build();
 
+                        if(!userIdToAccounts.containsKey(line[3])) {
+                            List<BankAccount> accounts = new ArrayList<>();
+                            accounts.add(account);
+                            userIdToAccounts.put(line[3], accounts);
+                        } else {
+                            userIdToAccounts.get(line[3]).add(account);
+                        }
+                        return account;
+                    })
+                    .collect(Collectors.toMap(account -> account.getCard().getCardID(), account -> account));
+        } catch (IOException e) {
+            throw new UncheckedIOException("Could not access " + bankAccountDb.toAbsolutePath().normalize().toString(), e);
         }
+
 
     }
 
-    private void populateDB() throws IOException {
-        cardIdToAccountMap = Files.lines(BANK_ACCOUNT_DB)
-                .map(line -> line.split(","))
-                .skip(1)
-                .map(line -> BankAccount.builder()
-                        .accountID(line[0])
-                        .balance(new BigDecimal(line[1]))
-                        .card(Card.builder()
-                                .cardID(line[2])
-                                .build())
-                        .build())
-                .collect(Collectors.toMap(BankAccount::getAccountID, account -> account));
+    public Optional<BankAccount> getBankAccountByCardId(String cardId) {
+        return Optional.ofNullable(cardIdToAccountMap.get(cardId));
+    }
+
+    public void update(BankAccount account) {
+        cardIdToAccountMap.put(account.getCard().getCardID(), account);
+
     }
 }
