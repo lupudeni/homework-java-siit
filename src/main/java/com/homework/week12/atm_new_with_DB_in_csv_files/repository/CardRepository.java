@@ -63,7 +63,7 @@ public class CardRepository {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(String.valueOf(cardDb)))) {
             writer.write(TABLE_HEADER);
             for (Card card : cardMap.values()) {
-                writer.write(card.getCardID() + "," + card.getPin());
+                writer.write(card.getCardID() + "," + card.getPin() + "\n");
             }
         }
     }
