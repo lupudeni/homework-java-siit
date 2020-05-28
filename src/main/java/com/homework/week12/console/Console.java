@@ -2,7 +2,6 @@ package com.homework.week12.console;
 
 import java.util.Scanner;
 
-
 public class Console {
     private static CommandService commandService = new CommandService();
 
@@ -31,10 +30,8 @@ public class Console {
                 "\nexit" +
                 "\nls" +
                 "\ncd" +
-                "\ncp" +
+                "\ncp" +  //cp a ../a
                 "\nmv" +
                 "\nwc");
     }
-
-
 }

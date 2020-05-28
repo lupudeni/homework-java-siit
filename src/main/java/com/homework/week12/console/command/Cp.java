@@ -8,8 +8,13 @@ import java.util.List;
 public class Cp implements Command {
     @Override
     public String execute(List<Path> paths) {
-        if(paths.size() == 1) {
-            return "cp: missing operand ";
+
+        if (paths == null || paths.isEmpty()) {
+            return "Arguments cannot be null or empty";
+        }
+
+        if (paths.size() == 1) {
+            return "cp: missing operand";
         }
         Path copyFrom = paths.get(0);
         Path copyTo = paths.get(1);
@@ -18,8 +23,7 @@ public class Cp implements Command {
             return "Copy successful";
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return "cp: cannot find '" + copyFrom.toAbsolutePath().normalize().toString() + "': No such file or directory";
+            return "cp: No such file or directory";
         }
-
     }
 }

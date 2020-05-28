@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 public class Ls implements Command {
     @Override
     public String execute(List<Path> paths) {
+        if(paths == null || paths.isEmpty()) {
+            return "Arguments cannot be null or empty";
+        }
         Path path = paths.get(0);
         try {
             return Files.walk(path, 1)

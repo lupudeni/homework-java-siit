@@ -12,7 +12,6 @@ public class CommandService {
     private static final Map<String, Command> commands = new HashMap<>();
     private Path currentWorkingPath;
 
-
     static {
         commands.put("ls", new Ls());
         commands.put("cp", new Cp());
@@ -22,8 +21,12 @@ public class CommandService {
 
     }
 
+    public CommandService(Path currentWorkingPath) {
+        this.currentWorkingPath = currentWorkingPath;
+    }
+
     public CommandService() {
-        currentWorkingPath = Paths.get(".");
+        this(Paths.get("."));
     }
 
     public String getCurrentWorkingPath() {
@@ -32,12 +35,11 @@ public class CommandService {
 
     public String call(String command) {
         if (command == null || command.trim().isEmpty()) {
-            return "Invalid command";
+            return "Arguments cannot be null or empty";
         }
 
         List<String> commandAndArguments = List.of(command.split("\\s+"));
         String commandName = commandAndArguments.get(0);
-
 
         if (commandName.equals("cd")) {
             return changeDirectory(commandAndArguments);
@@ -54,7 +56,6 @@ public class CommandService {
             List<Path> paths = getPaths(commandAndArguments.subList(1, commandAndArguments.size()));
             return commandToExecute.execute(paths);
         }
-
     }
 
     private List<Path> getPaths(List<String> commandAndArguments) {
@@ -63,7 +64,7 @@ public class CommandService {
                 .collect(Collectors.toList());
     }
 
-    private String changeDirectory(List<String> commandAndArguments) {
+    public String changeDirectory(List<String> commandAndArguments) {
         if (commandAndArguments.size() == 1) {
             currentWorkingPath = Paths.get(".");
             return "";

@@ -26,7 +26,7 @@ public class IOExercisesTest {
     }
 
     @BeforeClass
-    public static void myFiles() throws IOException {
+    public static void createTestingFiles() throws IOException {
         Files.createDirectory(TEST_ROOT_PATH.resolve("empty_dir"));
         Path populatedDir = Files.createDirectory(TEST_ROOT_PATH.resolve("populated_dir"));
         Files.createFile(populatedDir.resolve("File1.txt"));  // an empty txt file
@@ -73,7 +73,6 @@ public class IOExercisesTest {
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File3.txt"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File4.txt"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("File5.txt"));
-        Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir").resolve("unknown"));
         Files.deleteIfExists(TEST_ROOT_PATH.resolve("populated_dir"));
     }
 
