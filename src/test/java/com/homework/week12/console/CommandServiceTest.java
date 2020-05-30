@@ -66,8 +66,8 @@ public class CommandServiceTest {
         //Then
         assertThat(result).isEqualTo("io_test_root\n" +
                 "empty_dir\n" +
-                "ReadMe.txt\n" +
-                "populated_dir");
+                "populated_dir\n" +
+                "ReadMe.txt");
     }
 
     @Test

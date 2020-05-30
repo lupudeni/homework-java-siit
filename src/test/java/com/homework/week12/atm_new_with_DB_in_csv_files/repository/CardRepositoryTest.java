@@ -131,4 +131,41 @@ public class CardRepositoryTest {
         //When
         newCardRep.populateDB();
     }
+
+    @Test
+    public void given_Existing_Card_When_Card_Exists_Then_Return_True() {
+        //Given
+        Card card = Card.builder()
+                .cardID("1")
+                .pin("1234")
+                .build();
+        //When
+        boolean result = sut.cardExists(card);
+
+        //Then
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void given_Non_Existing_Card_When_Card_Exists_Then_Return_False() {
+        //Given
+        Card card = Card.builder()
+                .cardID("2")
+                .pin("1234")
+                .build();
+        //When
+        boolean result = sut.cardExists(card);
+
+        //Then
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void given_Null_When_Card_Exists_Then_Return_False() {
+        //When
+        boolean result = sut.cardExists(null);
+
+        //Then
+        assertThat(result).isFalse();
+    }
 }

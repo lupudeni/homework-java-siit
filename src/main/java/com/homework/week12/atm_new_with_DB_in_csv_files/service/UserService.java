@@ -12,6 +12,10 @@ public class UserService {
 
     private UserRepository userRepository;
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public UserService(BankAccountService bankAccountService) {
         Map<String, List<BankAccount>> userIdToAccounts = bankAccountService.getUserIdToAccounts();
         userRepository = new UserRepository(userIdToAccounts);

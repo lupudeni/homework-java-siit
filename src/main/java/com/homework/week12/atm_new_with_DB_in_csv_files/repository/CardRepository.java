@@ -68,6 +68,9 @@ public class CardRepository {
     }
 
     public boolean cardExists(Card card) {
+        if (card == null) {
+            return false;
+        }
         return cardMap.containsValue(card);
     }
 }

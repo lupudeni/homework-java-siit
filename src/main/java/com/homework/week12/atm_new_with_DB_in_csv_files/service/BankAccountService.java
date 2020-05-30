@@ -14,6 +14,10 @@ import java.util.Map;
 public class BankAccountService {
     private final BankAccountRepository bankAccountRepository;
 
+    public BankAccountService(BankAccountRepository bankAccountRepository) {
+       this.bankAccountRepository = bankAccountRepository;
+    }
+
     public BankAccountService(CardService cardService) {
         bankAccountRepository = new BankAccountRepository(cardService.getCardMap());
     }
@@ -41,6 +45,9 @@ public class BankAccountService {
     }
 
     public String withdraw(Card card, BigDecimal amount) throws EntityNotFoundException {
+        if (card == null || amount == null || amount.compareTo(BigDecimal.ZERO) < 0) {
+            return ActionStatus.FAIL;
+        }
         BankAccount account = getBankAccountByCardId(card.getCardID());
 
         BigDecimal balance = account.getBalance();
@@ -64,6 +71,9 @@ public class BankAccountService {
     }
 
     public String getUserIdByAccount(BankAccount account) throws EntityNotFoundException {
+        if (account == null) {
+            throw new EntityNotFoundException("Account cannot be null");
+        }
         return bankAccountRepository.getUserIdByAccountId(account.getAccountID());
     }
 
