@@ -45,7 +45,7 @@ public class CardService {
     }
 
     public String changePin(Card card, String newPin) {
-        if (getCardMap().containsValue(card)) {
+        if (cardRepository.cardExists(card)) {
             if (newPin.length() == 4 && stringManipulation.checkIfOnlyDigits(newPin)) {
                 card.setPin(newPin);
                 try {

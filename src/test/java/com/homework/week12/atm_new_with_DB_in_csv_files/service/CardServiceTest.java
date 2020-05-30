@@ -1,61 +1,44 @@
 package com.homework.week12.atm_new_with_DB_in_csv_files.service;
 
+import com.homework.exception.DatabaseException;
 import com.homework.exception.EntityNotFoundException;
 import com.homework.week12.atm_new_with_DB_in_csv_files.domain.Card;
 import com.homework.week12.atm_new_with_DB_in_csv_files.repository.CardRepository;
 import com.homework.week5.strings.StringManipulation;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CardServiceTest {
+
     @Mock
     private CardRepository cardRepository;
-
-    private static final Path TEST_ROOT_PATH = Paths.get("src", "test", "java", "com", "homework", "week12", "io_test_root");
+    @Mock
+    private StringManipulation stringManipulation;
+    @InjectMocks
     private CardService sut;
-    private Path testCardDb;
-    private StringManipulation stringManipulation = new StringManipulation();
-
-    @Before
-    public void createTestingFiles() throws IOException {
-        testCardDb = Files.createFile(TEST_ROOT_PATH.resolve("cardDB.csv"));
-        createCardDB();
-        cardRepository = new CardRepository(testCardDb);
-        sut = new CardService(cardRepository, stringManipulation);
-    }
-
-    public void createCardDB() throws IOException {
-        String db = "cardID,cardPin\n" +
-                "1,1234\n";
-        Files.write(testCardDb, db.getBytes());
-    }
-
-//    @After
-    public void cleanUp() throws IOException {
-        Files.deleteIfExists(testCardDb);
-    }
 
     @Test
     public void given_ID_When_Get_Card_By_Id_Then_Return_Card() throws EntityNotFoundException {
         //Given
+        String cardId = "1";
         Card card = Card.builder()
-                .cardID("1")
+                .cardID(cardId)
                 .pin("1234")
                 .build();
+        Mockito.when(cardRepository.getCardById(cardId)).thenReturn(Optional.of(card));
 
         //When
-        Card result = sut.getCardByID("1");
+        Card result = sut.getCardByID(cardId);
 
         //Then
         assertThat(result).isEqualTo(card);
@@ -63,31 +46,35 @@ public class CardServiceTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void given_Unknown_ID_When_Get_Card_By_Id_Then_Throw_Exception() throws EntityNotFoundException {
-        //When
-        Card result = sut.getCardByID("2");
-    }
+        //Given
+        String cardId = "2";
+        Mockito.when(cardRepository.getCardById(cardId)).thenReturn(Optional.empty());
 
-    @Test(expected = EntityNotFoundException.class)
-    public void given_Empty_When_Get_Card_By_Id_Then_Throw_Exception() throws EntityNotFoundException {
         //When
-        Card result = sut.getCardByID("");
+        sut.getCardByID(cardId);
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void given_Null_When_Get_Card_By_Id_Then_Throw_Exception() throws EntityNotFoundException {
+        //Given
+        String cardId = null;
+        Mockito.when(cardRepository.getCardById(cardId)).thenReturn(Optional.empty());
+
         //When
-        Card result = sut.getCardByID(null);
+        sut.getCardByID(cardId);
     }
 
     @Test
     public void given_Correct_Id_And_Pin_When_LogIn_Then_Return_Card() throws LoginException {
         //Given
-        Card card = Card.builder()
-                .cardID("1")
-                .pin("1234")
-                .build();
         String id = "1";
         String pin = "1234";
+        Card card = Card.builder()
+                .cardID(id)
+                .pin(pin)
+                .build();
+
+        Mockito.when(cardRepository.getCardById(id)).thenReturn(Optional.of(card));
 
         //When
         Card result = sut.logIn(id, pin);
@@ -102,6 +89,8 @@ public class CardServiceTest {
         String id = "2";
         String pin = "1234";
 
+        Mockito.when(cardRepository.getCardById(id)).thenReturn(Optional.empty());
+
         //When
         Card result = sut.logIn(id, pin);
     }
@@ -110,35 +99,44 @@ public class CardServiceTest {
     public void given_Correct_Id_And_Incorrect_Pin_When_LogIn_Then_Throw_Exception() throws LoginException {
         //Given
         String id = "1";
-        String pin = "0000";
+        String pin = "1234";
+        String wrongPin = "0000";
+        Card card = Card.builder()
+                .cardID(id)
+                .pin(pin)
+                .build();
+
+        Mockito.when(cardRepository.getCardById(id)).thenReturn(Optional.of(card));
 
         //When
-        Card result = sut.logIn(id, pin);
+        Card result = sut.logIn(id, wrongPin);
     }
 
     @Test
-    public void given_Known_Card_And_Valid_Pin_When_Change_Pin_Then_Change_Pin_In_File_And_Return_Success() throws IOException {
+    public void given_Known_Card_And_Valid_Pin_When_Change_Pin_Then_Return_Success() throws DatabaseException {
         //Given
         Card card = Card.builder()
                 .cardID("1")
                 .pin("1234")
                 .build();
         String newPin = "0000";
+        Card updatedCard = Card.builder()
+                .cardID("1")
+                .pin(newPin)
+                .build();
+        Mockito.when(cardRepository.cardExists(card)).thenReturn(true);
+        Mockito.when(stringManipulation.checkIfOnlyDigits(newPin)).thenReturn(true);
 
         //When
         String result = sut.changePin(card, newPin);
 
         //Then
+        Mockito.verify(cardRepository, Mockito.times(1)).update(updatedCard);
         assertThat(result).isEqualTo("Success");
-        assertThat(Files.lines(testCardDb)
-                .skip(1)
-                .map(line -> line.split(","))
-                .anyMatch(line -> line[0].equals("1") && line[1].equals("0000")))
-                .isTrue();
     }
 
     @Test
-    public void given_Known_Card_And_Invalid_Pin_When_Change_Pin_Then_Do_Not_Change_Pin_In_File_And_Return_Fail() throws IOException {
+    public void given_Known_Card_And_Invalid_Pin_When_Change_Pin_Then_Return_Fail() {
         //Given
         Card card = Card.builder()
                 .cardID("1")
@@ -146,20 +144,17 @@ public class CardServiceTest {
                 .build();
         String newPin = "abc";
 
+        Mockito.when(cardRepository.cardExists(card)).thenReturn(true);
+
         //When
         String result = sut.changePin(card, newPin);
 
         //Then
         assertThat(result).isEqualTo("Fail");
-        assertThat(Files.lines(testCardDb)
-                .skip(1)
-                .map(line -> line.split(","))
-                .anyMatch(line -> line[0].equals("1") && line[1].equals("1234")))
-                .isTrue();
     }
 
     @Test
-    public void given_Unknown_Card_And_Pin_When_Change_Pin_Then_Do_Not_Change_Pin_In_File_And_Return_Fail() throws IOException {
+    public void given_Unknown_Card_And_Pin_When_Change_Pin_Then_Return_Fail() {
         //Given
         Card card = Card.builder()
                 .cardID("5")
@@ -167,20 +162,17 @@ public class CardServiceTest {
                 .build();
         String newPin = "1234";
 
+        Mockito.when(cardRepository.cardExists(card)).thenReturn(false);
+
         //When
         String result = sut.changePin(card, newPin);
 
         //Then
         assertThat(result).isEqualTo("Fail");
-        assertThat(Files.lines(testCardDb)
-                .skip(1)
-                .map(line -> line.split(","))
-                .anyMatch(line -> line[0].equals("1") && line[1].equals("1234")))
-                .isTrue();
     }
 
     @Test
-    public void given_Unknown_Path_When_Change_Pin_Then_Return_Fail() {
+    public void given_Unknown_Path_When_Change_Pin_Then_Return_Fail() throws DatabaseException {
         //Given
         Card card = Card.builder()
                 .cardID("1")
@@ -188,16 +180,14 @@ public class CardServiceTest {
                 .build();
         String newPin = "0000";
 
-        Path unknown = TEST_ROOT_PATH.resolve("x");
+        Mockito.when(cardRepository.cardExists(card)).thenReturn(true);
+        Mockito.when(stringManipulation.checkIfOnlyDigits(newPin)).thenReturn(true);
+        Mockito.doThrow(new DatabaseException(": Update failure")).when(cardRepository).update(card);
 
         //When
-       String result = newCardService.changePin(card, newPin);
+        String result = sut.changePin(card, newPin);
 
         //Then
-        assertThat(result).isEqualTo("");
+        assertThat(result).isEqualTo("Fail : Update failure");
     }
-
-
-
-
 }
