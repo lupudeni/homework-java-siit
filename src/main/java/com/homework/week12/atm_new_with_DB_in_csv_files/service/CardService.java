@@ -38,24 +38,24 @@ public class CardService {
         } catch (EntityNotFoundException e) {
             throw new LoginException("Invalid card ID / pin");
         }
-        if(card.getPin().equals(pin)) {
+        if (card.getPin().equals(pin)) {
             return card;
         }
         throw new LoginException("Invalid card ID / pin");
     }
 
     public String changePin(Card card, String newPin) {
-        if (newPin.length() == 4 && stringManipulation.checkIfOnlyDigits(newPin)) {
-            card.setPin(newPin);
-            try {
-                cardRepository.update(card);
-            } catch (DatabaseException e) {
-                return ActionStatus.FAIL + " " + e.getMessage();
+        if (getCardMap().containsValue(card)) {
+            if (newPin.length() == 4 && stringManipulation.checkIfOnlyDigits(newPin)) {
+                card.setPin(newPin);
+                try {
+                    cardRepository.update(card);
+                } catch (DatabaseException e) {
+                    return ActionStatus.FAIL + " " + e.getMessage();
+                }
+                return ActionStatus.SUCCESS;
             }
-            return ActionStatus.SUCCESS;
         }
         return ActionStatus.FAIL;
     }
-
-
 }

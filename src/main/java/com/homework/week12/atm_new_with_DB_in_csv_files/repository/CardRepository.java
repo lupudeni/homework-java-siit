@@ -26,7 +26,7 @@ public class CardRepository {
         populateDB();
     }
 
-    private void populateDB() {
+    void populateDB() {
         try {
             cardMap = Files.lines(cardDb)
                     .map(line -> line.split(","))
@@ -51,7 +51,6 @@ public class CardRepository {
 
     public void update(Card card) throws DatabaseException {
         cardMap.put(card.getCardID(), card);
-
         try {
             writeDb();
         } catch (IOException e) {
@@ -59,7 +58,7 @@ public class CardRepository {
         }
     }
 
-    private void writeDb() throws IOException {
+    void writeDb() throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(String.valueOf(cardDb)))) {
             writer.write(TABLE_HEADER);
             for (Card card : cardMap.values()) {

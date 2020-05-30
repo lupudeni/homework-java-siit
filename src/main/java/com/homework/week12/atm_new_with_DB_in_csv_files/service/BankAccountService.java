@@ -64,7 +64,7 @@ public class BankAccountService {
     }
 
     public String getUserIdByAccount(BankAccount account) throws EntityNotFoundException {
-        return bankAccountRepository.getUserIdByAccount(account);
+        return bankAccountRepository.getUserIdByAccountId(account.getAccountID());
     }
 
     public Map<String, List<BankAccount>> getUserIdToAccounts() {

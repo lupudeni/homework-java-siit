@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class UserRepository {
 
     private final Path userDb;
-    private Map<User,List <BankAccount>> userToAccount;
+    private Map<User, List<BankAccount>> userToAccounts;
 
     public UserRepository(Map<String, List<BankAccount>> userIdToAccounts) {
         this(userIdToAccounts, Paths.get("atm_db", "userDB.csv"));
@@ -27,25 +27,24 @@ public class UserRepository {
         populateDb(userIdToAccounts);
     }
 
-    private void populateDb(Map<String, List<BankAccount>> userIdToAccounts) {
-        System.out.println("userIdToAccounts = " + userIdToAccounts.toString());
+    void populateDb(Map<String, List<BankAccount>> userIdToAccounts) {
         try {
-            userToAccount = Files.lines(userDb)
+            userToAccounts = Files.lines(userDb)
                     .map(line -> line.split(","))
                     .skip(1)
                     .map(line -> User.builder()
                             .userId(line[0])
                             .name(line[1])
+                            .bankAccount(userIdToAccounts.get(line[0]))
                             .build())
                     .collect(Collectors.toMap(user -> user, user -> userIdToAccounts.get(user.getUserId())));
         } catch (IOException e) {
             throw new UncheckedIOException("Could not access " + userDb.toAbsolutePath().normalize().toString(), e);
-
         }
     }
 
     public Optional<User> getUserById(String userId) {
-       return userToAccount.keySet().stream()
+        return userToAccounts.keySet().stream()
                 .filter(user -> user.getUserId().equals(userId))
                 .findFirst();
     }

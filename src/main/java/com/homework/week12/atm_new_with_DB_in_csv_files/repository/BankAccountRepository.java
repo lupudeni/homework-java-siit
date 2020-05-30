@@ -33,7 +33,7 @@ public class BankAccountRepository {
         populateDB(cardMap);
     }
 
-    private void populateDB(Map<String, Card> cardMap) {
+    void populateDB(Map<String, Card> cardMap) {
         userIdToAccounts = new HashMap<>();
         try {
             cardIdToAccountMap = Files.lines(bankAccountDb)
@@ -74,32 +74,39 @@ public class BankAccountRepository {
         try {
             writeDb();
         } catch (IOException | EntityNotFoundException e) {
-            throw new DatabaseException(bankAccountDb.toAbsolutePath().normalize().toString() + " : Update failure");
+            throw new DatabaseException(bankAccountDb.toAbsolutePath().normalize().toString() + " : Update failure : " +
+                    e.getMessage());
         }
-
     }
 
-    private void writeDb() throws IOException, EntityNotFoundException {
-
+    void writeDb() throws IOException, EntityNotFoundException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(String.valueOf(bankAccountDb)))) {
             writer.write(TABLE_HEADER);
-
             for (BankAccount account : cardIdToAccountMap.values()) {
-               String line = account.getAccountID() + ","
+                String line = account.getAccountID() + ","
                         + account.getBalance().toString() + ","
                         + account.getCard().getCardID() + ","
-                        + getUserIdByAccount(account) +"\n";
-               writer.write(line);
+                        + getUserIdByAccountId(account.getAccountID()) + "\n";
+                writer.write(line);
             }
         }
     }
 
-    public String getUserIdByAccount(BankAccount account) throws EntityNotFoundException {
-       return userIdToAccounts.entrySet()
+    public String getUserIdByAccountId(String accountId) throws EntityNotFoundException {
+        return userIdToAccounts.entrySet()
                 .stream()
-                .filter(userIdToAccountListEntry -> userIdToAccountListEntry.getValue().contains(account))
+                .filter(userIdToAccountListEntry -> accountListContainsId(userIdToAccountListEntry.getValue(), accountId))
                 .map(Map.Entry::getKey)
                 .findAny()
-                .orElseThrow(() -> new EntityNotFoundException("No user linked to bank account id '" + account.getAccountID() + "'"));
+                .orElseThrow(() -> new EntityNotFoundException("No user linked to bank account id '" + accountId + "'"));
+    }
+
+    public boolean accountListContainsId(List<BankAccount> accounts, String accountId) {
+        return accounts.stream()
+                .anyMatch(account -> account.getAccountID().equals(accountId));
+    }
+
+    public Map<String, BankAccount> getCardIdToAccountMap() {
+        return new HashMap<>(cardIdToAccountMap);
     }
 }
