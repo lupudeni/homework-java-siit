@@ -23,7 +23,7 @@ public class FestivalCheckInService {
         for (int i = 0; i < POOL_SIZE; i++) {
             int ticketIndex = getRandomNumberWithLimit(ticketTypes.length);
             TicketType ticket = ticketTypes[ticketIndex];
-            attendeeFutures.add(attendeeExecutor.schedule(new FestivalAttendeeThread(ticket, gate),getRandomNumberWithLimit(12), TimeUnit.SECONDS));
+            attendeeFutures.add(attendeeExecutor.schedule(new FestivalAttendeeThread(ticket, gate), getRandomNumberWithLimit(12), TimeUnit.SECONDS));
         }
 
         for (Future<?> future : attendeeFutures) {

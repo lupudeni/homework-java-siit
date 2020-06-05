@@ -15,7 +15,6 @@ public class FestivalAttendeeThread extends Thread {
     @Override
     public void run() {
         Thread.sleep(500);
-        System.out.println("new attendee thread : " + Thread.currentThread().getName() + " " + ticketType);
         gate.validateTicket(ticketType);
     }
 }

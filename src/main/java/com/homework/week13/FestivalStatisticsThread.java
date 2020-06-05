@@ -24,11 +24,9 @@ public class FestivalStatisticsThread extends Thread {
     @SneakyThrows
     @Override
     public void run() {
-//        System.out.println(LocalTime.now());
         while (gate.hasTicket()) {
             Thread.sleep(10);
             TicketType ticketType = gate.getTicket();
-            System.out.println("processing ticket: " + ticketType + " on thread " + Thread.currentThread().getName());
             Integer currentCount = ticketCountMap.get(ticketType);
             ticketCountMap.put(ticketType, ++currentCount);
         }
