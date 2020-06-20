@@ -3,16 +3,15 @@ package com.homework.week15.jdbc.repository;
 import com.homework.week15.jdbc.domain.*;
 
 import java.sql.*;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
-
-
+import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_URL;
 
 public class OrderDAOImpl implements OrderDAO {
 
-    private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/classicmodels?serverTimezone=EET";
+    private final ProductDAO productDAO = new ProductDAOImpl();
+    private final CustomerDAO customerDAO = new CustomerDAOImpl();
 
     @Override
     public void save(Order order) {
@@ -87,79 +86,114 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     private Order extractOrderFromResultSet(ResultSet resultSet) throws SQLException {
-        return Order.builder()
+        Order order = Order.builder()
                 .orderNumber(resultSet.getInt("orderNumber"))
                 .orderDate(resultSet.getDate("orderDate").toLocalDate())
                 .requiredDate(resultSet.getDate("requiredDate").toLocalDate())
                 .shippedDate(resultSet.getDate("shippedDate").toLocalDate())
                 .status(resultSet.getString("status"))
                 .comments(resultSet.getString("comments"))
-                .customer(extractCustomerFromResultSet(resultSet))
-                .orderDetail(extractOrderDetailFromResultSet(resultSet))
+                .customer(customerDAO.findCustomerByNumber(resultSet.getInt("customerNumber")))
                 .build();
-    }
-//for date conversion : toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-    private OrderDetail extractOrderDetailFromResultSet(ResultSet resultSet) {
-        return
 
-    }
-
-    private Customer extractCustomerFromResultSet(ResultSet resultSet) throws SQLException{
-        Customer.builder()
-                .customerNumber(resultSet.getInt("customerNumber"))
-                .customerName(resultSet.getString("customerName"))
-                .contactLastName(resultSet.getString("contactLastName"))
-                .contactFirstName(resultSet.getString("contactFirstName"))
-                .phone(resultSet.getString("phone"))
-                .addressLine1(resultSet.getString("addressLine1"))
-                .addressLine2(resultSet.getString("addressLine2"))
-                .city(resultSet.getString("city"))
-                .postalCode(resultSet.getString("postalCode"))
-                .country(resultSet.getString("country"))
-                .salesRepEmployee(resultSet.getInt("salesRepEmployee") == 0 ? null : extractEmployeeFromResultSet(resultSet))
-                .creditLimit(resultSet.getBigDecimal("creditLimit"))
-                .build();
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        while (resultSet.next()) {
+            OrderDetail orderDetail = extractOrderDetailFromResultSet(resultSet, order);
+            orderDetails.add(orderDetail);
+        }
+        order.setOrderDetailList(orderDetails);
+        return order;
     }
 
-    private Employee extractEmployeeFromResultSet(ResultSet resultSet) throws SQLException {
-        return Employee.builder()
-                .employeeNumber(resultSet.getInt("employeeNumber"))
-                .lastName(resultSet.getString("lastName"))
-                .firstName(resultSet.getString("firstName"))
-                .extension(resultSet.getString("extension"))
-                .email(resultSet.getString("email"))
-                .office(extractOfficeFromResultSet(resultSet))
-                .reportsTo(resultSet.getInt("reportsTo") == 0 ? null : extractEmployeeFromResultSet(resultSet))
-                .jobTitle(resultSet.getString("jobTitle"))
-                .build();
-    }
+    //for date conversion : toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+    private OrderDetail extractOrderDetailFromResultSet(ResultSet resultSet, Order order) throws SQLException {
 
-    private Office extractOfficeFromResultSet(ResultSet resultSet) throws SQLException{
-        return Office.builder()
-                .officeCode(resultSet.getString("officeCode"))
-                .city(resultSet.getString("city"))
-                .phone(resultSet.getString("phone"))
-                .addressLine1(resultSet.getString("addressLine1"))
-                .addressLine2(resultSet.getString("addressLine2"))
-                .state(resultSet.getString("state"))
-                .country(resultSet.getString("country"))
-                .postalCode(resultSet.getString("postalCode"))
-                .territory(resultSet.getString("territory"))
+        Product product = productDAO.findByCode(resultSet.getString("productCode"));
+        return OrderDetail.builder()
+                .order(order)
+                .product(product)
+                .quantityOrdered(resultSet.getInt("quantityOrdered"))
+                .priceEach(resultSet.getBigDecimal("priceEach"))
+                .orderLineNumber(resultSet.getInt("orderLineNumber"))
                 .build();
     }
 
     @Override
-    public List<Order> findByCustomer(Customer customer) {
-        return null;
+    public List<Order> findByCustomerNumber(int customerNumber) {
+
+        String query = "SELECT * FROM orders o " +
+                "JOIN customers c ON o.customerNumber = c.customerNumber " +
+                "WHERE o.customerNumber = ?";
+
+        PreparedStatement preparedStatement = getPreparedStatement(query);
+        List<Order> orders = new ArrayList<>();
+
+        try {
+            preparedStatement.setInt(1, customerNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Order order = findByNumber(resultSet.getInt("orderNumber"));
+                orders.add(order);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while retrieving order by customer number " + customerNumber);
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(preparedStatement);
+        }
+        return orders;
     }
 
     @Override
     public void update(Order order) {
+        String query = "UPDATE orders " +
+                "orderNumber = ?, " +
+                "orderDate = ?, " +
+                "requiredDate = ?, " +
+                "shippedDate = ?, " +
+                "status = ?, " +
+                "comments = ?, " +
+                "customerNumber = ? " +
+                "WHERE orderNumber = ?";
 
+        PreparedStatement preparedStatement = getPreparedStatement(query);
+        int rowsAffected = 0;
+        try {
+            preparedStatement.setInt(8, order.getOrderNumber());
+            rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Update successful");
+            } else {
+                System.out.println("Update failed");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while updating order number " + order.getOrderNumber());
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(preparedStatement);
+        }
     }
 
     @Override
     public void delete(int orderNumber) {
+        String query = "DELETE FROM orders WHERE orderNumber = ?";
+        PreparedStatement preparedStatement = getPreparedStatement(query);
+        int rowsAffected = 0;
+
+        try {
+            preparedStatement.setInt(1, orderNumber);
+            rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Order removed successfully");
+            } else {
+                System.out.println("Fail: no order number " + orderNumber + " found in database");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while removing order number " + orderNumber);
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(preparedStatement);
+        }
 
     }
 
@@ -180,6 +214,4 @@ public class OrderDAOImpl implements OrderDAO {
             System.out.println("Error while closing connection");
         }
     }
-
-
 }

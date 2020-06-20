@@ -1,9 +1,6 @@
 package com.homework.week15.jdbc.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -11,6 +8,7 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @ToString
+@Builder
 public class OrderDetail {
 
 
@@ -22,9 +20,7 @@ public class OrderDetail {
 
     @ToString.Exclude
     private Order order;
-//    private int orderNumber;
 
     @ToString.Exclude
     private Product product;
-//    private String productCode;
 }

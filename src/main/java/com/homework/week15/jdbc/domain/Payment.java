@@ -1,9 +1,6 @@
 package com.homework.week15.jdbc.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,6 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Payment {
 
     private String checkNumber;
@@ -22,5 +20,4 @@ public class Payment {
 
     @ToString.Exclude
     private Customer customer;
-//    private int customerNumber;
 }

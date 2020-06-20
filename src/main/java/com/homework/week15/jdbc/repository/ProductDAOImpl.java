@@ -7,9 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDAOImpl implements ProductDAO {
+import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_URL;
 
-    private static final String CONNECTION_URL = "jdbc:mysql://localhost:3306/classicmodels?serverTimezone=EET";
+public class ProductDAOImpl implements ProductDAO {
 
     @Override
     public void save(Product product) {
@@ -212,7 +212,6 @@ public class ProductDAOImpl implements ProductDAO {
             throw new RuntimeException("Error while getting connection: ", e);
         }
     }
-
 
     private void closeConnection(PreparedStatement preparedStatement) {
         try {

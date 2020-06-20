@@ -4,6 +4,7 @@ import lombok.*;
 
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -27,12 +28,8 @@ public class Order {
 
     @ToString.Exclude
     private Customer customer;
-//    private int customerNumber;
 
     @ToString.Exclude
-    private OrderDetail orderDetail;
+    private List<OrderDetail> orderDetailList;
 
-    private LocalDate getOrderDate() {
-        return this.orderDate;
-    }
 }

@@ -16,8 +16,6 @@ public class Product {
 
     private String productName;
 
-//    private String productLine; //foreign key
-
     private String productScale;
 
     private String productVendor;
@@ -29,8 +27,6 @@ public class Product {
     private BigDecimal buyPrice;
 
     private BigDecimal MSRP;
-
-//    private OrderDetail orderDetail;
 
     @ToString.Exclude
     private ProductLine productLine;

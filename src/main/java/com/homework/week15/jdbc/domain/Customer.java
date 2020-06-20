@@ -45,5 +45,4 @@ public class Customer {
     @ToString.Exclude
     private List<Payment> paymentList;
 
-//    private int salesRepEmployeeNumber;
 }
