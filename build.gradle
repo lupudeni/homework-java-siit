@@ -13,6 +13,7 @@ repositories {
 
 dependencies {
     compile group: 'org.projectlombok', name: 'lombok', version: '1.18.12'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.19'
 
     annotationProcessor("org.projectlombok:lombok:1.18.12")
 
