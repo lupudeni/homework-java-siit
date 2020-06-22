@@ -16,7 +16,7 @@ public class ProductLine {
 
     private String htmlDescription;
 
-    private byte[] image; //mediumblob
+    private byte[] image;
 
     @ToString.Exclude
     private List<Product> productList;

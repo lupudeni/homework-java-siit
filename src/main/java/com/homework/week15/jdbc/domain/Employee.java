@@ -25,13 +25,10 @@ public class Employee {
 
     @ToString.Exclude
     private Employee reportsTo;
-//    private int reportsTo; // also an employee -> should make Employee? should exclude from toString?
 
     @ToString.Exclude
     private Office office;
 
     @ToString.Exclude
     private List<Customer> customerList;
-
-//    private String officeCode;
 }

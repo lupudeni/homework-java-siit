@@ -26,7 +26,7 @@ public class ProductDAOImpl implements ProductDAO {
 
         PreparedStatement preparedStatement = getPreparedStatement(query);
 
-        int rowsAffected = 0;
+        int rowsAffected;
         int paramIndex = 1;
         try {
             String productCode = getNextProductCode();
@@ -176,7 +176,7 @@ public class ProductDAOImpl implements ProductDAO {
 
         PreparedStatement preparedStatement = getPreparedStatement(query);
 
-        int rowsAffected = 0;
+        int rowsAffected;
         try {
             preparedStatement.setString(10, product.getProductCode());
             rowsAffected = preparedStatement.executeUpdate();
@@ -186,20 +186,14 @@ public class ProductDAOImpl implements ProductDAO {
         } finally {
             closeConnection(preparedStatement);
         }
-        if (rowsAffected > 0) {
-            return true;
-//            System.out.println("Product with code " + product.getProductCode() + " was updated successfully");
-        } else {
-            return false;
-//            System.out.println("No product with code " + product.getProductCode() + " found in database");
-        }
+        return rowsAffected > 0;
     }
 
     @Override
     public boolean delete(String productCode) {
         String query = "DELETE FROM products WHERE productCode = ?";
         PreparedStatement preparedStatement = getPreparedStatement(query);
-        int rowsAffected = 0;
+        int rowsAffected;
         try {
             preparedStatement.setString(1, productCode);
             rowsAffected = preparedStatement.executeUpdate();
@@ -208,14 +202,7 @@ public class ProductDAOImpl implements ProductDAO {
             throw new RuntimeException(e);
         }
 
-        if (rowsAffected > 0) {
-            return true;
-//            System.out.println("Product with code " + productCode + " was successfully removed");
-
-        } else {
-            return false;
-//            System.out.println("No product with code " + productCode + " found in database");
-        }
+        return rowsAffected > 0;
     }
 
     private PreparedStatement getPreparedStatement(String query) {

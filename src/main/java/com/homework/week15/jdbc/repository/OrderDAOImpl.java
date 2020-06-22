@@ -10,9 +10,7 @@ import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_UR
 
 public class OrderDAOImpl implements OrderDAO {
 
-    //    private final ProductDAO productDAO = new ProductDAOImpl();
-//    private final CustomerDAO customerDAO = new CustomerDAOImpl();
-    private String connectionUrl;
+    private final String connectionUrl;
 
     public OrderDAOImpl(String connection) { //used for testing
         this.connectionUrl = connection;
@@ -35,7 +33,7 @@ public class OrderDAOImpl implements OrderDAO {
                 "VALUES(?,?,?,?,?,?,?)";
 
         PreparedStatement preparedStatement = getPreparedStatement(query);
-        int rowsAffected = 0;
+        int rowsAffected;
         int paramIndex = 1;
         try {
             int orderNumber = getNewOrderNumber();
@@ -50,11 +48,9 @@ public class OrderDAOImpl implements OrderDAO {
             rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected == 1) {
-//                System.out.println("Order inserted successfully");
                 order.setOrderNumber(orderNumber);
                 return order;
             } else {
-//                System.out.println("Order not inserted");
                 return null;
             }
         } catch (SQLException e) {
@@ -113,7 +109,6 @@ public class OrderDAOImpl implements OrderDAO {
                 .customer(Customer.builder()
                         .customerNumber(resultSet.getInt("customerNumber"))
                         .build())
-//                .customer(customerDAO.findCustomerByNumber(resultSet.getInt("customerNumber")))
                 .build();
 
         List<OrderDetail> orderDetails = populateOrderDetailList(resultSet, order);
@@ -133,13 +128,11 @@ public class OrderDAOImpl implements OrderDAO {
 
     private OrderDetail extractOrderDetailFromResultSet(ResultSet resultSet, Order order) throws SQLException {
 
-//        Product product = productDAO.findByCode(resultSet.getString("productCode"));
         return OrderDetail.builder()
                 .order(order)
                 .product(Product.builder()
                         .productCode(resultSet.getString("productCode"))
                         .build())
-//                .product(product)
                 .quantityOrdered(resultSet.getInt("quantityOrdered"))
                 .priceEach(resultSet.getBigDecimal("priceEach"))
                 .orderLineNumber(resultSet.getInt("orderLineNumber"))
@@ -185,15 +178,11 @@ public class OrderDAOImpl implements OrderDAO {
                 "WHERE orderNumber = ?";
 
         PreparedStatement preparedStatement = getPreparedStatement(query);
-        int rowsAffected = 0;
+        int rowsAffected;
         try {
             preparedStatement.setInt(8, order.getOrderNumber());
             rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Error while updating order number " + order.getOrderNumber());
             throw new RuntimeException(e);
@@ -206,18 +195,12 @@ public class OrderDAOImpl implements OrderDAO {
     public boolean delete(int orderNumber) {
         String query = "DELETE FROM orders WHERE orderNumber = ?";
         PreparedStatement preparedStatement = getPreparedStatement(query);
-        int rowsAffected = 0;
+        int rowsAffected;
 
         try {
             preparedStatement.setInt(1, orderNumber);
             rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                return true;
-//                System.out.println("Order removed successfully");
-            } else {
-                return false;
-//                System.out.println("Fail: no order number " + orderNumber + " found in database");
-            }
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Error while removing order number " + orderNumber);
             throw new RuntimeException(e);

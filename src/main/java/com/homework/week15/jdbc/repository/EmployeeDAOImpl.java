@@ -10,37 +10,6 @@ import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_UR
 public class EmployeeDAOImpl implements EmployeeDAO {
 
     @Override
-    public void update(Employee employee) {
-        String query = "UPDATE employees " +
-                "employeeNumber = ?, " +
-                "lastName = ?, " +
-                "firstName = ?, " +
-                "extension = ?, " +
-                "email = ?, " +
-                "officeCode = ?, " +
-                "reportsTo = ?, " +
-                "jobTitle = ?, " +
-                "WHERE employeeNumber = ?";
-
-        PreparedStatement preparedStatement = getPreparedStatement(query);
-        int rowsAffected = 0;
-        try {
-            preparedStatement.setInt(9, employee.getEmployeeNumber());
-            rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("Update successful");
-            } else {
-                System.out.println("Update failed");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error while updating employee number " + employee.getEmployeeNumber());
-            throw new RuntimeException(e);
-        } finally {
-            closeConnection(preparedStatement);
-        }
-    }
-
-    @Override
     public Employee findByNumber(int employeeNumber) {
         String query = "SELECT * FROM employees e " +
                 "JOIN offices o ON e.officeCode = o.officeCode " +
@@ -57,6 +26,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         } catch (SQLException e) {
             System.out.println("Error while retrieving Employee");
             throw new RuntimeException(e);
+        } finally {
+            closeConnection(preparedStatement);
         }
     }
 
@@ -87,7 +58,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                 .postalCode(resultSet.getString("postalCode"))
                 .territory(resultSet.getString("territory"))
                 .build();
-
     }
 
     private PreparedStatement getPreparedStatement(String query) {
@@ -99,7 +69,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             throw new RuntimeException("Error while getting connection: ", e);
         }
     }
-
 
     private void closeConnection(PreparedStatement preparedStatement) {
         try {

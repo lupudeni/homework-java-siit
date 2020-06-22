@@ -2,7 +2,6 @@ package com.homework.week15.jdbc.repository;
 
 import com.homework.week15.jdbc.domain.Order;
 
-import java.sql.ResultSet;
 import java.util.List;
 
 public interface OrderDAO {

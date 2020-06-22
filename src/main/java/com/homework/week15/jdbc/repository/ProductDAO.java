@@ -1,7 +1,6 @@
 package com.homework.week15.jdbc.repository;
 
 import com.homework.week15.jdbc.domain.Product;
-import com.homework.week15.jdbc.domain.ProductLine;
 
 import java.util.List;
 
