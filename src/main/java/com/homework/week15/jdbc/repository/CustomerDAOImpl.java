@@ -1,6 +1,7 @@
 package com.homework.week15.jdbc.repository;
 
 import com.homework.week15.jdbc.domain.Customer;
+import com.homework.week15.jdbc.domain.Employee;
 import com.homework.week15.jdbc.domain.Order;
 import com.homework.week15.jdbc.domain.Payment;
 
@@ -11,8 +12,44 @@ import java.util.List;
 import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_URL;
 
 public class CustomerDAOImpl implements CustomerDAO {
-    private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    private OrderDAO orderDAO = new OrderDAOImpl();
+//    private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+//    private OrderDAO orderDAO = new OrderDAOImpl();
+
+    @Override
+    public void update(Customer customer) {
+        String query = "UPDATE customers " +
+                "customerNumber = ?, " +
+                "customerName = ?, " +
+                "contactLastName = ?, " +
+                "contactFirstName = ?, " +
+                "phone = ?, " +
+                "addressLine1 = ?, " +
+                "addressLine2 = ? " +
+                "city = ?, " +
+                "state = ?, " +
+                "postalCode = ?, " +
+                "salesRepEmployeeNumber = ?, " +
+                "creditLimit = ? " +
+                "WHERE customerNumber = ?";
+
+        PreparedStatement preparedStatement = getPreparedStatement(query);
+        int rowsAffected = 0;
+        try {
+            preparedStatement.setInt(13, customer.getCustomerNumber());
+            rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Update successful");
+            } else {
+                System.out.println("Update failed");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while updating customer number " + customer.getCustomerNumber());
+            throw new RuntimeException(e);
+        } finally {
+            closeConnection(preparedStatement);
+        }
+
+    }
 
     @Override
     public Customer findCustomerByNumber(int customerNumber) {
@@ -25,13 +62,14 @@ public class CustomerDAOImpl implements CustomerDAO {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 return extractCustomerFromResultSet(resultSet);
+            } else {
+                return  null;
             }
         } catch (SQLException e) {
             System.out.println("Error while retrieving customer number " + customerNumber);
             throw new RuntimeException(e);
         }
 
-        return null;
     }
 
     private Customer extractCustomerFromResultSet(ResultSet resultSet) throws SQLException {
@@ -47,13 +85,16 @@ public class CustomerDAOImpl implements CustomerDAO {
                 .city(resultSet.getString("city"))
                 .postalCode(resultSet.getString("postalCode"))
                 .country(resultSet.getString("country"))
-                .salesRepEmployee(salesRepEmployee == 0 ? null : employeeDAO.findByNumber(salesRepEmployee))
+                .salesRepEmployee(salesRepEmployee == 0 ? null : Employee.builder()
+                        .employeeNumber(salesRepEmployee)
+                        .build())
+//                .salesRepEmployee(salesRepEmployee == 0 ? null : employeeDAO.findByNumber(salesRepEmployee))
                 .creditLimit(resultSet.getBigDecimal("creditLimit"))
                 .build();
 
-        List<Order> orders = new ArrayList<>();
-        orders = orderDAO.findByCustomerNumber(resultSet.getInt("customerNumber"));
-        customer.setOrderList(orders);
+//        List<Order> orders = new ArrayList<>();
+//        orders = orderDAO.findByCustomerNumber(resultSet.getInt("customerNumber"));
+//        customer.setOrderList(orders);
 
         List<Payment> payments = new ArrayList<>();
         while (resultSet.next()) {

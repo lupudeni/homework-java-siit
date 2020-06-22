@@ -12,7 +12,7 @@ import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_UR
 public class ProductDAOImpl implements ProductDAO {
 
     @Override
-    public void save(Product product) {
+    public Product save(Product product) {
         String query = "INSERT INTO products" +
                 "(productCode, " +
                 "productName, " +
@@ -29,7 +29,8 @@ public class ProductDAOImpl implements ProductDAO {
         int rowsAffected = 0;
         int paramIndex = 1;
         try {
-            preparedStatement.setString(paramIndex++, getNextProductCode());
+            String productCode = getNextProductCode();
+            preparedStatement.setString(paramIndex++, productCode);
             preparedStatement.setString(paramIndex++, product.getProductName());
             preparedStatement.setString(paramIndex++, product.getProductLine().getProductLine());
             preparedStatement.setString(paramIndex++, product.getProductScale());
@@ -40,6 +41,16 @@ public class ProductDAOImpl implements ProductDAO {
             preparedStatement.setBigDecimal(paramIndex, product.getMSRP());
 
             rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected == 1) {
+//                System.out.println("Product inserted successfully");
+                product.setProductCode(productCode);
+                return product;
+            } else {
+//                System.out.println("Product not inserted");
+                return null;
+            }
+
         } catch (SQLException e) {
             System.out.println("Error while inserting product");
             throw new RuntimeException(e);
@@ -150,7 +161,7 @@ public class ProductDAOImpl implements ProductDAO {
     }
 
     @Override
-    public void update(Product product) {
+    public boolean update(Product product) {
         String query = "UPDATE products SET " +
                 "productName = ?, " +
                 "productLine = ?, " +
@@ -176,14 +187,16 @@ public class ProductDAOImpl implements ProductDAO {
             closeConnection(preparedStatement);
         }
         if (rowsAffected > 0) {
-            System.out.println("Product with code " + product.getProductCode() + " was updated successfully");
+            return true;
+//            System.out.println("Product with code " + product.getProductCode() + " was updated successfully");
         } else {
-            System.out.println("No product with code " + product.getProductCode() + " found in database");
+            return false;
+//            System.out.println("No product with code " + product.getProductCode() + " found in database");
         }
     }
 
     @Override
-    public void delete(String productCode) {
+    public boolean delete(String productCode) {
         String query = "DELETE FROM products WHERE productCode = ?";
         PreparedStatement preparedStatement = getPreparedStatement(query);
         int rowsAffected = 0;
@@ -196,10 +209,12 @@ public class ProductDAOImpl implements ProductDAO {
         }
 
         if (rowsAffected > 0) {
-            System.out.println("Product with code " + productCode + " was successfully removed");
-            ;
+            return true;
+//            System.out.println("Product with code " + productCode + " was successfully removed");
+
         } else {
-            System.out.println("No product with code " + productCode + " found in database");
+            return false;
+//            System.out.println("No product with code " + productCode + " found in database");
         }
     }
 

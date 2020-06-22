@@ -10,11 +10,20 @@ import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_UR
 
 public class OrderDAOImpl implements OrderDAO {
 
-    private final ProductDAO productDAO = new ProductDAOImpl();
-    private final CustomerDAO customerDAO = new CustomerDAOImpl();
+    //    private final ProductDAO productDAO = new ProductDAOImpl();
+//    private final CustomerDAO customerDAO = new CustomerDAOImpl();
+    private String connectionUrl;
+
+    public OrderDAOImpl(String connection) { //used for testing
+        this.connectionUrl = connection;
+    }
+
+    public OrderDAOImpl() {
+        this(CONNECTION_URL);
+    }
 
     @Override
-    public void save(Order order) {
+    public Order save(Order order) {
         String query = "INSERT INTO orders(" +
                 "orderNumber, " +
                 "orderDate, " +
@@ -29,7 +38,8 @@ public class OrderDAOImpl implements OrderDAO {
         int rowsAffected = 0;
         int paramIndex = 1;
         try {
-            preparedStatement.setInt(paramIndex++, getNextIndex());
+            int orderNumber = getNewOrderNumber();
+            preparedStatement.setInt(paramIndex++, orderNumber);
             preparedStatement.setDate(paramIndex++, Date.valueOf(order.getOrderDate()));
             preparedStatement.setDate(paramIndex++, Date.valueOf(order.getRequiredDate()));
             preparedStatement.setDate(paramIndex++, Date.valueOf(order.getShippedDate()));
@@ -38,6 +48,15 @@ public class OrderDAOImpl implements OrderDAO {
             preparedStatement.setInt(paramIndex, order.getCustomer().getCustomerNumber());
 
             rowsAffected = preparedStatement.executeUpdate();
+
+            if (rowsAffected == 1) {
+//                System.out.println("Order inserted successfully");
+                order.setOrderNumber(orderNumber);
+                return order;
+            } else {
+//                System.out.println("Order not inserted");
+                return null;
+            }
         } catch (SQLException e) {
             System.out.println("Error while inserting order");
             throw new RuntimeException(e);
@@ -46,7 +65,7 @@ public class OrderDAOImpl implements OrderDAO {
         }
     }
 
-    private int getNextIndex() throws SQLException {
+    private int getNewOrderNumber() throws SQLException {
         String query = "SELECT MAX(orderNumber) FROM orders";
         PreparedStatement preparedStatement = getPreparedStatement(query);
         try {
@@ -81,8 +100,6 @@ public class OrderDAOImpl implements OrderDAO {
         } finally {
             closeConnection(preparedStatement);
         }
-
-
     }
 
     private Order extractOrderFromResultSet(ResultSet resultSet) throws SQLException {
@@ -93,25 +110,36 @@ public class OrderDAOImpl implements OrderDAO {
                 .shippedDate(resultSet.getDate("shippedDate").toLocalDate())
                 .status(resultSet.getString("status"))
                 .comments(resultSet.getString("comments"))
-                .customer(customerDAO.findCustomerByNumber(resultSet.getInt("customerNumber")))
+                .customer(Customer.builder()
+                        .customerNumber(resultSet.getInt("customerNumber"))
+                        .build())
+//                .customer(customerDAO.findCustomerByNumber(resultSet.getInt("customerNumber")))
                 .build();
 
+        List<OrderDetail> orderDetails = populateOrderDetailList(resultSet, order);
+        order.setOrderDetailList(orderDetails);
+        return order;
+    }
+
+    private List<OrderDetail> populateOrderDetailList(ResultSet resultSet, Order order) throws SQLException {
         List<OrderDetail> orderDetails = new ArrayList<>();
         while (resultSet.next()) {
             OrderDetail orderDetail = extractOrderDetailFromResultSet(resultSet, order);
             orderDetails.add(orderDetail);
         }
-        order.setOrderDetailList(orderDetails);
-        return order;
+        return orderDetails;
+
     }
 
-    //for date conversion : toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
     private OrderDetail extractOrderDetailFromResultSet(ResultSet resultSet, Order order) throws SQLException {
 
-        Product product = productDAO.findByCode(resultSet.getString("productCode"));
+//        Product product = productDAO.findByCode(resultSet.getString("productCode"));
         return OrderDetail.builder()
                 .order(order)
-                .product(product)
+                .product(Product.builder()
+                        .productCode(resultSet.getString("productCode"))
+                        .build())
+//                .product(product)
                 .quantityOrdered(resultSet.getInt("quantityOrdered"))
                 .priceEach(resultSet.getBigDecimal("priceEach"))
                 .orderLineNumber(resultSet.getInt("orderLineNumber"))
@@ -145,7 +173,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public void update(Order order) {
+    public boolean update(Order order) {
         String query = "UPDATE orders " +
                 "orderNumber = ?, " +
                 "orderDate = ?, " +
@@ -162,9 +190,9 @@ public class OrderDAOImpl implements OrderDAO {
             preparedStatement.setInt(8, order.getOrderNumber());
             rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Update successful");
+                return true;
             } else {
-                System.out.println("Update failed");
+                return false;
             }
         } catch (SQLException e) {
             System.out.println("Error while updating order number " + order.getOrderNumber());
@@ -175,7 +203,7 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     @Override
-    public void delete(int orderNumber) {
+    public boolean delete(int orderNumber) {
         String query = "DELETE FROM orders WHERE orderNumber = ?";
         PreparedStatement preparedStatement = getPreparedStatement(query);
         int rowsAffected = 0;
@@ -184,9 +212,11 @@ public class OrderDAOImpl implements OrderDAO {
             preparedStatement.setInt(1, orderNumber);
             rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Order removed successfully");
+                return true;
+//                System.out.println("Order removed successfully");
             } else {
-                System.out.println("Fail: no order number " + orderNumber + " found in database");
+                return false;
+//                System.out.println("Fail: no order number " + orderNumber + " found in database");
             }
         } catch (SQLException e) {
             System.out.println("Error while removing order number " + orderNumber);
@@ -194,12 +224,11 @@ public class OrderDAOImpl implements OrderDAO {
         } finally {
             closeConnection(preparedStatement);
         }
-
     }
 
     private PreparedStatement getPreparedStatement(String query) {
         try {
-            Connection connection = DriverManager.getConnection(CONNECTION_URL, "siit", "siit");
+            Connection connection = DriverManager.getConnection(connectionUrl, "siit", "siit");
             return connection.prepareStatement(query);
         } catch (SQLException e) {
             System.out.println("Error while getting connection");
