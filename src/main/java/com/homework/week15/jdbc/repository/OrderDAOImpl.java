@@ -14,7 +14,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     public OrderDAOImpl(String connection) { //used for testing
         this.connectionUrl = connection;
-    }
+    } //for testing
 
     public OrderDAOImpl() {
         this(CONNECTION_URL);

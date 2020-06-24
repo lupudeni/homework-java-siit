@@ -3,7 +3,6 @@ package com.homework.week15.jdbc;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,7 +16,7 @@ public class DBTestUtils {
         String query = Files.readString(
                 Path.of("src", "test", "java", "com", "homework", "week15", "jdbc", "test_db_structure.sql"));
         PreparedStatement preparedStatement = getPreparedStatement(query);
-        preparedStatement.executeQuery();
+        preparedStatement.executeUpdate();
         closeConnection(preparedStatement);
     }
 
