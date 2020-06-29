@@ -1,135 +1,111 @@
-create schema if not exists classicmodels_test collate latin1_swedish_ci;
+CREATE DATABASE IF NOT EXISTS `classicmodels_test`  DEFAULT CHARACTER SET latin1;
 
-create table if not exists offices
-(
-    officeCode   varchar(10) not null
-        primary key,
-    city         varchar(50) not null,
-    phone        varchar(50) not null,
-    addressLine1 varchar(50) not null,
-    addressLine2 varchar(50) null,
-    state        varchar(50) null,
-    country      varchar(50) not null,
-    postalCode   varchar(15) not null,
-    territory    varchar(10) not null
-);
+USE `classicmodels_test`;
 
-create table if not exists employees
-(
-    employeeNumber int          not null
-        primary key,
-    lastName       varchar(50)  not null,
-    firstName      varchar(50)  not null,
-    extension      varchar(10)  not null,
-    email          varchar(100) not null,
-    officeCode     varchar(10)  not null,
-    reportsTo      int          null,
-    jobTitle       varchar(50)  not null,
-    constraint employees_ibfk_1
-        foreign key (reportsTo) references employees (employeeNumber),
-    constraint employees_ibfk_2
-        foreign key (officeCode) references offices (officeCode)
-);
+/*Table structure for table `customers` */
 
-create table if not exists customers
-(
-    customerNumber         int            not null
-        primary key,
-    customerName           varchar(50)    not null,
-    contactLastName        varchar(50)    not null,
-    contactFirstName       varchar(50)    not null,
-    phone                  varchar(50)    not null,
-    addressLine1           varchar(50)    not null,
-    addressLine2           varchar(50)    null,
-    city                   varchar(50)    not null,
-    state                  varchar(50)    null,
-    postalCode             varchar(15)    null,
-    country                varchar(50)    not null,
-    salesRepEmployeeNumber int            null,
-    creditLimit            decimal(10, 2) null,
-    constraint customers_ibfk_1
-        foreign key (salesRepEmployeeNumber) references employees (employeeNumber)
-);
+CREATE TABLE IF NOT EXISTS `offices` (
+                                         `officeCode` varchar(10) NOT NULL,
+                                         `city` varchar(50) NOT NULL,
+                                         `phone` varchar(50) NOT NULL,
+                                         `addressLine1` varchar(50) NOT NULL,
+                                         `addressLine2` varchar(50) DEFAULT NULL,
+                                         `state` varchar(50) DEFAULT NULL,
+                                         `country` varchar(50) NOT NULL,
+                                         `postalCode` varchar(15) NOT NULL,
+                                         `territory` varchar(10) NOT NULL,
+                                         PRIMARY KEY (`officeCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create index salesRepEmployeeNumber
-    on customers (salesRepEmployeeNumber);
+CREATE TABLE IF NOT EXISTS `employees` (
+                             `employeeNumber` int(11) NOT NULL,
+                             `lastName` varchar(50) NOT NULL,
+                             `firstName` varchar(50) NOT NULL,
+                             `extension` varchar(10) NOT NULL,
+                             `email` varchar(100) NOT NULL,
+                             `officeCode` varchar(10) NOT NULL,
+                             `reportsTo` int(11) DEFAULT NULL,
+                             `jobTitle` varchar(50) NOT NULL,
+                             PRIMARY KEY (`employeeNumber`),
+                             KEY `reportsTo` (`reportsTo`),
+                             KEY `officeCode` (`officeCode`),
+                             CONSTRAINT `employees_ibfk_1` FOREIGN KEY (`reportsTo`) REFERENCES `employees` (`employeeNumber`),
+                             CONSTRAINT `employees_ibfk_2` FOREIGN KEY (`officeCode`) REFERENCES `offices` (`officeCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create index officeCode
-    on employees (officeCode);
 
-create index reportsTo
-    on employees (reportsTo);
+CREATE TABLE IF NOT EXISTS `customers` (
+                             `customerNumber` int(11) NOT NULL,
+                             `customerName` varchar(50) NOT NULL,
+                             `contactLastName` varchar(50) NOT NULL,
+                             `contactFirstName` varchar(50) NOT NULL,
+                             `phone` varchar(50) NOT NULL,
+                             `addressLine1` varchar(50) NOT NULL,
+                             `addressLine2` varchar(50) DEFAULT NULL,
+                             `city` varchar(50) NOT NULL,
+                             `state` varchar(50) DEFAULT NULL,
+                             `postalCode` varchar(15) DEFAULT NULL,
+                             `country` varchar(50) NOT NULL,
+                             `salesRepEmployeeNumber` int(11) DEFAULT NULL,
+                             `creditLimit` decimal(10,2) DEFAULT NULL,
+                             PRIMARY KEY (`customerNumber`),
+                             KEY `salesRepEmployeeNumber` (`salesRepEmployeeNumber`),
+                             CONSTRAINT `customers_ibfk_1` FOREIGN KEY (`salesRepEmployeeNumber`) REFERENCES `employees` (`employeeNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table if not exists orders
-(
-    orderNumber    int         not null
-        primary key,
-    orderDate      date        not null,
-    requiredDate   date        not null,
-    shippedDate    date        null,
-    status         varchar(15) not null,
-    comments       text        null,
-    customerNumber int         not null,
-    constraint orders_ibfk_1
-        foreign key (customerNumber) references customers (customerNumber)
-);
+CREATE TABLE IF NOT EXISTS `orders` (
+                                        `orderNumber` int(11) NOT NULL,
+                                        `orderDate` date NOT NULL,
+                                        `requiredDate` date NOT NULL,
+                                        `shippedDate` date DEFAULT NULL,
+                                        `status` varchar(15) NOT NULL,
+                                        `comments` text,
+                                        `customerNumber` int(11) NOT NULL,
+                                        PRIMARY KEY (`orderNumber`),
+                                        KEY `customerNumber` (`customerNumber`),
+                                        CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customerNumber`) REFERENCES `customers` (`customerNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create index customerNumber
-    on orders (customerNumber);
+CREATE TABLE IF NOT EXISTS `productlines` (
+                                              `productLine` varchar(50) NOT NULL,
+                                              `textDescription` varchar(4000) DEFAULT NULL,
+                                              `htmlDescription` mediumtext,
+                                              `image` mediumblob,
+                                              PRIMARY KEY (`productLine`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table if not exists payments
-(
-    customerNumber int            not null,
-    checkNumber    varchar(50)    not null,
-    paymentDate    date           not null,
-    amount         decimal(10, 2) not null,
-    primary key (customerNumber, checkNumber),
-    constraint payments_ibfk_1
-        foreign key (customerNumber) references customers (customerNumber)
-);
+CREATE TABLE IF NOT EXISTS `products` (
+                                          `productCode` varchar(15) NOT NULL,
+                                          `productName` varchar(70) NOT NULL,
+                                          `productLine` varchar(50) NOT NULL,
+                                          `productScale` varchar(10) NOT NULL,
+                                          `productVendor` varchar(50) NOT NULL,
+                                          `productDescription` text NOT NULL,
+                                          `quantityInStock` smallint(6) NOT NULL,
+                                          `buyPrice` decimal(10,2) NOT NULL,
+                                          `MSRP` decimal(10,2) NOT NULL,
+                                          PRIMARY KEY (`productCode`),
+                                          KEY `productLine` (`productLine`),
+                                          CONSTRAINT `products_ibfk_1` FOREIGN KEY (`productLine`) REFERENCES `productlines` (`productLine`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table if not exists productlines
-(
-    productLine     varchar(50)   not null
-        primary key,
-    textDescription varchar(4000) null,
-    htmlDescription mediumtext    null,
-    image           mediumblob    null
-);
+CREATE TABLE IF NOT EXISTS `orderdetails` (
+                                `orderNumber` int(11) NOT NULL,
+                                `productCode` varchar(15) NOT NULL,
+                                `quantityOrdered` int(11) NOT NULL,
+                                `priceEach` decimal(10,2) NOT NULL,
+                                `orderLineNumber` smallint(6) NOT NULL,
+                                PRIMARY KEY (`orderNumber`,`productCode`),
+                                KEY `productCode` (`productCode`),
+                                CONSTRAINT `orderdetails_ibfk_1` FOREIGN KEY (`orderNumber`) REFERENCES `orders` (`orderNumber`),
+                                CONSTRAINT `orderdetails_ibfk_2` FOREIGN KEY (`productCode`) REFERENCES `products` (`productCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-create table if not exists products
-(
-    productCode        varchar(15)    not null
-        primary key,
-    productName        varchar(70)    not null,
-    productLine        varchar(50)    not null,
-    productScale       varchar(10)    not null,
-    productVendor      varchar(50)    not null,
-    productDescription text           not null,
-    quantityInStock    smallint       not null,
-    buyPrice           decimal(10, 2) not null,
-    MSRP               decimal(10, 2) not null,
-    constraint products_ibfk_1
-        foreign key (productLine) references productlines (productLine)
-);
-
-create table if not exists orderdetails
-(
-    orderNumber     int            not null,
-    productCode     varchar(15)    not null,
-    quantityOrdered int            not null,
-    priceEach       decimal(10, 2) not null,
-    orderLineNumber smallint       not null,
-    primary key (orderNumber, productCode),
-    constraint orderdetails_ibfk_1
-        foreign key (orderNumber) references orders (orderNumber),
-    constraint orderdetails_ibfk_2
-        foreign key (productCode) references products (productCode)
-);
-
-create index productCode
-    on orderdetails (productCode);
-
-create index productLine
-    on products (productLine);
-
+CREATE TABLE IF NOT EXISTS `payments` (
+                            `customerNumber` int(11) NOT NULL,
+                            `checkNumber` varchar(50) NOT NULL,
+                            `paymentDate` date NOT NULL,
+                            `amount` decimal(10,2) NOT NULL,
+                            PRIMARY KEY (`customerNumber`,`checkNumber`),
+                            CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`customerNumber`) REFERENCES `customers` (`customerNumber`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

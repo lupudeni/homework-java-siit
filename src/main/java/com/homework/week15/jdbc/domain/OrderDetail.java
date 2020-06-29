@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @Setter
 @ToString
 @Builder
+@EqualsAndHashCode
 public class OrderDetail {
 
 

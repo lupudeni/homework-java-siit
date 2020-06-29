@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
+@EqualsAndHashCode
 public class Customer {
 
     private int customerNumber;
@@ -36,13 +37,13 @@ public class Customer {
 
     private BigDecimal creditLimit;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     private Employee salesRepEmployee;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     private List<Order> orderList;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     private List<Payment> paymentList;
 
 }

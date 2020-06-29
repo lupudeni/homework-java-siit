@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
@@ -26,10 +27,10 @@ public class Order {
 
     private String comments;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     private Customer customer;
 
-    @ToString.Exclude
+//    @ToString.Exclude
     private List<OrderDetail> orderDetailList;
 
 }

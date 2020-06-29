@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Builder
+@EqualsAndHashCode
 public class Payment {
 
     private String checkNumber;

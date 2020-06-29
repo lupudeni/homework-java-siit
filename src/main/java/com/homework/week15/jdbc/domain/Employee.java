@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @ToString
 @Builder
+@EqualsAndHashCode
 public class Employee {
     private int employeeNumber;
 

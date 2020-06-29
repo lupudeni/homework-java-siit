@@ -62,13 +62,15 @@ public class OrderDAOImpl implements OrderDAO {
     }
 
     private int getNewOrderNumber() throws SQLException {
-        String query = "SELECT MAX(orderNumber) FROM orders";
+        String query = "SELECT MAX(orderNumber) AS maxOrderNumber FROM orders";
         PreparedStatement preparedStatement = getPreparedStatement(query);
         try {
             ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            int index = resultSet.getInt("orderNumber");
-            return ++index;
+            if(resultSet.next()) {
+                int index = resultSet.getInt("maxOrderNumber");
+                return ++index;
+            }
+            return 10100;
         } finally {
             closeConnection(preparedStatement);
         }
