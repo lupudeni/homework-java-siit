@@ -6,7 +6,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -19,7 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-//@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class OrderDAOImplTest {
 
     private static OrderDAO sut;
@@ -31,6 +33,8 @@ public class OrderDAOImplTest {
 
     @AfterClass
     public static void cleanUp() throws SQLException {
+        //delete from orders where orderNumber in ( 10101, 10102);
+
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels_test?serverTimezone=EET", "siit", "siit");
         connection.prepareStatement("DELETE FROM orders WHERE orderNumber = 10101").executeUpdate();
     }
@@ -118,5 +122,10 @@ public class OrderDAOImplTest {
 
         //then
         assertThat(orders).containsExactly(order);
+    }
+
+    @Test
+    public void given() throws SQLException {
+        //given
     }
 }

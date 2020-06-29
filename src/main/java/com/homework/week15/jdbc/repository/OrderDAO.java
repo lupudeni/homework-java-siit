@@ -2,6 +2,7 @@ package com.homework.week15.jdbc.repository;
 
 import com.homework.week15.jdbc.domain.Order;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 public interface OrderDAO {
@@ -15,5 +16,7 @@ public interface OrderDAO {
     boolean update(Order order);
 
     boolean delete(int orderNumber);
+
+    PreparedStatement getPreparedStatement(String query);
 
 }
