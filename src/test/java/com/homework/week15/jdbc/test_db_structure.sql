@@ -75,8 +75,12 @@ CREATE TABLE IF NOT EXISTS `orders` (
                                         KEY `customerNumber` (`customerNumber`),
                                         CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`customerNumber`) REFERENCES `customers` (`customerNumber`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+insert into orders(orderNumber, orderDate, requiredDate, shippedDate, status,  customerNumber)
+values (10100,'2003-01-06','2003-01-13','2003-01-10','Shipped',103);
 
-#delete from orders where orderNumber in ( 10101, 10102);
+insert into orders(orderNumber, orderDate, requiredDate, shippedDate, status,  customerNumber)
+values (10101,'2003-01-09','2003-01-18','2003-01-11','Shipped',103);
+
 
 CREATE TABLE IF NOT EXISTS `productlines` (
                                               `productLine` varchar(50) NOT NULL,

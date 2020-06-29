@@ -178,7 +178,17 @@ public class ProductDAOImpl implements ProductDAO {
 
         int rowsAffected;
         try {
-            preparedStatement.setString(10, product.getProductCode());
+            preparedStatement.setString(1, product.getProductName());
+            preparedStatement.setString(2, product.getProductLine().getProductLine());
+            preparedStatement.setString(3, product.getProductScale());
+            preparedStatement.setString(4, product.getProductVendor());
+            preparedStatement.setString(5, product.getProductDescription());
+            preparedStatement.setInt(6, product.getQuantityInStock());
+            preparedStatement.setBigDecimal(7, product.getBuyPrice());
+            preparedStatement.setBigDecimal(8, product.getMSRP());
+
+
+            preparedStatement.setString(9, product.getProductCode());
             rowsAffected = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error while updating Product");

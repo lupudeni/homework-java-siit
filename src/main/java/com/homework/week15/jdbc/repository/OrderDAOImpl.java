@@ -33,7 +33,6 @@ public class OrderDAOImpl implements OrderDAO {
                 "VALUES(?,?,?,?,?,?,?)";
 
         PreparedStatement preparedStatement = getPreparedStatement(query);
-        int rowsAffected;
         int paramIndex = 1;
         try {
             int orderNumber = getNewOrderNumber();
@@ -45,14 +44,9 @@ public class OrderDAOImpl implements OrderDAO {
             preparedStatement.setString(paramIndex++, order.getComments());
             preparedStatement.setInt(paramIndex, order.getCustomer().getCustomerNumber());
 
-            rowsAffected = preparedStatement.executeUpdate();
-
-            if (rowsAffected == 1) {
-                order.setOrderNumber(orderNumber);
-                return order;
-            } else {
-                return null;
-            }
+            preparedStatement.executeUpdate();
+            order.setOrderNumber(orderNumber);
+            return order;
         } catch (SQLException e) {
             System.out.println("Error while inserting order");
             throw new RuntimeException(e);
@@ -66,7 +60,7 @@ public class OrderDAOImpl implements OrderDAO {
         PreparedStatement preparedStatement = getPreparedStatement(query);
         try {
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()) {
+            if (resultSet.next()) {
                 int index = resultSet.getInt("maxOrderNumber");
                 return ++index;
             }
@@ -169,8 +163,7 @@ public class OrderDAOImpl implements OrderDAO {
 
     @Override
     public boolean update(Order order) {
-        String query = "UPDATE orders " +
-                "orderNumber = ?, " +
+        String query = "UPDATE orders SET " +
                 "orderDate = ?, " +
                 "requiredDate = ?, " +
                 "shippedDate = ?, " +
@@ -182,7 +175,13 @@ public class OrderDAOImpl implements OrderDAO {
         PreparedStatement preparedStatement = getPreparedStatement(query);
         int rowsAffected;
         try {
-            preparedStatement.setInt(8, order.getOrderNumber());
+            preparedStatement.setDate(1, Date.valueOf(order.getOrderDate()));
+            preparedStatement.setDate(2, Date.valueOf(order.getRequiredDate()));
+            preparedStatement.setDate(3, Date.valueOf(order.getShippedDate()));
+            preparedStatement.setString(4, order.getStatus());
+            preparedStatement.setString(5, order.getComments());
+            preparedStatement.setInt(6, order.getCustomer().getCustomerNumber());
+            preparedStatement.setInt(7, order.getOrderNumber());
             rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
@@ -218,7 +217,7 @@ public class OrderDAOImpl implements OrderDAO {
             return connection.prepareStatement(query);
         } catch (SQLException e) {
             System.out.println("Error while getting connection");
-            throw new RuntimeException("Error while getting connection: ", e);
+            throw new RuntimeException(e);
         }
     }
 

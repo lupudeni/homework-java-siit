@@ -13,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Matchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OrderDAOImplTest {
@@ -33,26 +35,26 @@ public class OrderDAOImplTest {
 
     @AfterClass
     public static void cleanUp() throws SQLException {
-        //delete from orders where orderNumber in ( 10101, 10102);
+        //delete from orders where orderNumber in (10102);
 
         Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels_test?serverTimezone=EET", "siit", "siit");
-        connection.prepareStatement("DELETE FROM orders WHERE orderNumber = 10101").executeUpdate();
+        connection.prepareStatement("DELETE FROM orders WHERE orderNumber = 10102").executeUpdate();
     }
 
-    private Order createOrderForSaveTest() {
+    private Order createOrderForSaveTest(int customerNumber) {
         return Order.builder()
                 .orderDate(LocalDate.of(1995, 2, 4))
                 .requiredDate(LocalDate.of(1995, 2, 5))
                 .shippedDate(LocalDate.of(1995, 2, 6))
                 .status("Shipped")
                 .comments("test order")
-                .customer(createCustomerForSaveTest())
+                .customer(createCustomerForSaveTest(customerNumber))
                 .build();
     }
 
-    private Customer createCustomerForSaveTest() {
-      return Customer.builder()
-                .customerNumber(103)
+    private Customer createCustomerForSaveTest(int customerNumber) {
+        return Customer.builder()
+                .customerNumber(customerNumber)
                 .customerName("Atelier graphique")
                 .contactLastName("Schmitt")
                 .contactFirstName("Carine")
@@ -69,13 +71,13 @@ public class OrderDAOImplTest {
     @Test
     public void given_order_when_save_then_return_saved_order_with_new_unique_number() {
         //Given
-        Order order = createOrderForSaveTest();
+        Order order = createOrderForSaveTest(103);
 
         //when
         Order returnedOrder = sut.save(order);
 
         //then
-        assertThat(returnedOrder.getOrderNumber()).isEqualTo(10101);
+        assertThat(returnedOrder.getOrderNumber()).isEqualTo(10102);
     }
     // //preparedStatement.executeUpdate()
 
@@ -124,8 +126,32 @@ public class OrderDAOImplTest {
         assertThat(orders).containsExactly(order);
     }
 
-    @Test
-    public void given() throws SQLException {
+    @Test(expected = RuntimeException.class)
+    public void given_inexistent_foreign_key_when_save_then_throw_exception() {
         //given
+        Order order = createOrderForSaveTest(1);
+
+        //when
+        sut.save(order);
+    }
+
+    @Test
+    public void given_existing_order_with_new_data_when_update_then_return_true(){
+        //given
+        Order order = Order.builder()
+                .orderNumber(10101)
+                .orderDate(LocalDate.of(2003, 1, 9))
+                .requiredDate(LocalDate.of(2003, 1, 18))
+                .shippedDate(LocalDate.of(2003, 1, 11))
+                .status("Returned")
+                .customer(Customer.builder().customerNumber(103).build())
+                .orderDetailList(new ArrayList<>())
+                .build();
+
+        //when
+        boolean isUpdated = sut.update(order);
+
+        //then
+        assertThat(isUpdated).isTrue();
     }
 }
