@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS `customers` (
 insert  into `customers`(`customerNumber`,`customerName`,`contactLastName`,`contactFirstName`,`phone`,`addressLine1`,`addressLine2`,`city`,`state`,`postalCode`,`country`,`salesRepEmployeeNumber`,`creditLimit`)
 values (103,'Atelier graphique','Schmitt','Carine ','40.32.2555','54, rue Royale',NULL,'Nantes',NULL,'44000','France',1002,'21000.00');
 
+insert  into `customers`(`customerNumber`,`customerName`,`contactLastName`,`contactFirstName`,`phone`,`addressLine1`,`addressLine2`,`city`,`state`,`postalCode`,`country`,`salesRepEmployeeNumber`,`creditLimit`)
+values (104,'Australian Collectors, Co.','Ferguson','Peter ','03 9520 4555','54, 636 St Kilda Road',NULL,'Nantes',NULL,'44000','France',1002,'21000.00');
 
 CREATE TABLE IF NOT EXISTS `orders` (
                                         `orderNumber` int(11) NOT NULL,
@@ -79,7 +81,9 @@ insert into orders(orderNumber, orderDate, requiredDate, shippedDate, status,  c
 values (10100,'2003-01-06','2003-01-13','2003-01-10','Shipped',103);
 
 insert into orders(orderNumber, orderDate, requiredDate, shippedDate, status,  customerNumber)
-values (10101,'2003-01-09','2003-01-18','2003-01-11','Shipped',103);
+values (10101,'2003-01-09','2003-01-18','2003-01-11','Shipped',104);
+
+
 
 
 CREATE TABLE IF NOT EXISTS `productlines` (

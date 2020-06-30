@@ -173,7 +173,6 @@ public class OrderDAOImpl implements OrderDAO {
                 "WHERE orderNumber = ?";
 
         PreparedStatement preparedStatement = getPreparedStatement(query);
-        int rowsAffected;
         try {
             preparedStatement.setDate(1, Date.valueOf(order.getOrderDate()));
             preparedStatement.setDate(2, Date.valueOf(order.getRequiredDate()));
@@ -182,7 +181,7 @@ public class OrderDAOImpl implements OrderDAO {
             preparedStatement.setString(5, order.getComments());
             preparedStatement.setInt(6, order.getCustomer().getCustomerNumber());
             preparedStatement.setInt(7, order.getOrderNumber());
-            rowsAffected = preparedStatement.executeUpdate();
+            int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Error while updating order number " + order.getOrderNumber());
