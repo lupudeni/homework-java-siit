@@ -9,6 +9,16 @@ import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_UR
 
 public class EmployeeDAOImpl implements EmployeeDAO {
 
+    private final String connectionURL;
+
+    public EmployeeDAOImpl(String connectionURL) {
+        this.connectionURL = connectionURL;
+    }
+
+    public EmployeeDAOImpl() {
+        this(CONNECTION_URL);
+    }
+
     @Override
     public Employee findByNumber(int employeeNumber) {
         String query = "SELECT * FROM employees e " +
@@ -62,11 +72,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     private PreparedStatement getPreparedStatement(String query) {
         try {
-            Connection connection = DriverManager.getConnection(CONNECTION_URL, "siit", "siit");
+            Connection connection = DriverManager.getConnection(connectionURL, "siit", "siit");
             return connection.prepareStatement(query);
         } catch (SQLException e) {
             System.out.println("Error while getting connection");
-            throw new RuntimeException("Error while getting connection: ", e);
+            throw new RuntimeException(e);
         }
     }
 

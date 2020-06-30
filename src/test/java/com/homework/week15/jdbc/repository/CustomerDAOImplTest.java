@@ -4,7 +4,6 @@ import com.homework.week15.jdbc.DBUtils;
 import com.homework.week15.jdbc.domain.Customer;
 import com.homework.week15.jdbc.domain.Employee;
 import com.homework.week15.jdbc.domain.Payment;
-import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +11,9 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class CustomerDAOImplTest {
     private CustomerDAO sut;
@@ -32,19 +32,29 @@ public class CustomerDAOImplTest {
     @Test
     public void given_customer_number_when_find_by_number_then_return_customer() {
         //given
-        Customer customer = getExistingCustomer();
+        Customer customer = getCustomerForTest();
         int customerNumber = 103;
 
         //when
         Customer returnedCustomer = sut.findCustomerByNumber(customerNumber);
 
         //then
-        Assertions.assertThat(returnedCustomer).isEqualTo(customer);
+        assertThat(returnedCustomer).isEqualTo(customer);
     }
 
-    //(103,'HQ336336','2004-10-19','6066.78');
+    @Test
+    public void given_unknown_customer_number_when_find_by_number_then_return_null() {
+        //given
+        int customerNumber = 104;
 
-    private Customer getExistingCustomer() {
+        //when
+        Customer returnedCustomer = sut.findCustomerByNumber(customerNumber);
+
+        //then
+        assertThat(returnedCustomer).isNull();
+    }
+
+    private Customer getCustomerForTest() {
         return Customer.builder()
                 .customerNumber(103)
                 .customerName("Atelier graphique")

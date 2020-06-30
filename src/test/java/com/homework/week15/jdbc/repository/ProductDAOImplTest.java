@@ -59,6 +59,18 @@ public class ProductDAOImplTest {
         assertThat(returnedProduct.getProductCode()).isEqualTo("S01_0000");
     }
 
+    @Test(expected = RuntimeException.class)
+    public void given_unknown_foreign_key_when_save_then_throw_exception() {
+        //given
+        Product product = getCustomeProduct();
+        product.setProductLine(ProductLine.builder()
+                .productLine("unknown")
+                .build());
+
+        //when
+        sut.save(product);
+    }
+
     @Test
     public void given_last_index_when_save_then_return_product_with_updated_code() throws SQLException {
         //given
@@ -79,7 +91,7 @@ public class ProductDAOImplTest {
     @Test
     public void given_existing_code_when_find_by_code_then_return_product() {
         //given
-       Product product= getExistingProduct();
+        Product product = getExistingProduct();
 
         String productCode = "S10_1949";
 
