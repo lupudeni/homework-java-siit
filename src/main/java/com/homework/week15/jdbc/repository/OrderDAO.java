@@ -17,6 +17,4 @@ public interface OrderDAO {
 
     boolean delete(int orderNumber);
 
-    PreparedStatement getPreparedStatement(String query);
-
 }

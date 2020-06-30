@@ -210,8 +210,7 @@ public class OrderDAOImpl implements OrderDAO {
         }
     }
 
-    @Override
-    public PreparedStatement getPreparedStatement(String query) {
+    private PreparedStatement getPreparedStatement(String query) {
         try {
             Connection connection = DriverManager.getConnection(connectionUrl, "siit", "siit");
             return connection.prepareStatement(query);

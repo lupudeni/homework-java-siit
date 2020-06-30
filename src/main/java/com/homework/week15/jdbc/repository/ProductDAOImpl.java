@@ -11,6 +11,16 @@ import static com.homework.week15.jdbc.constants.DatabaseConstants.CONNECTION_UR
 
 public class ProductDAOImpl implements ProductDAO {
 
+    private final String connectionURL;
+
+    public ProductDAOImpl(String connectionURL) {  //for testing
+        this.connectionURL = connectionURL;
+    }
+
+    public ProductDAOImpl() {
+        this(CONNECTION_URL);
+    }
+
     @Override
     public Product save(Product product) {
         String query = "INSERT INTO products" +
@@ -43,11 +53,9 @@ public class ProductDAOImpl implements ProductDAO {
             rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected == 1) {
-//                System.out.println("Product inserted successfully");
                 product.setProductCode(productCode);
                 return product;
             } else {
-//                System.out.println("Product not inserted");
                 return null;
             }
 
@@ -165,7 +173,6 @@ public class ProductDAOImpl implements ProductDAO {
         String query = "UPDATE products SET " +
                 "productName = ?, " +
                 "productLine = ?, " +
-                "productLine = ?, " +
                 "productScale = ?, " +
                 "productVendor = ?, " +
                 "productDescription = ?, " +
@@ -217,7 +224,7 @@ public class ProductDAOImpl implements ProductDAO {
 
     private PreparedStatement getPreparedStatement(String query) {
         try {
-            Connection connection = DriverManager.getConnection(CONNECTION_URL, "siit", "siit");
+            Connection connection = DriverManager.getConnection(connectionURL, "siit", "siit");
             return connection.prepareStatement(query);
         } catch (SQLException e) {
             System.out.println("Error while getting connection");
