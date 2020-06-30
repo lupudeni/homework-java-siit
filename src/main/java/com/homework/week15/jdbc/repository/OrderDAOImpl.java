@@ -60,8 +60,9 @@ public class OrderDAOImpl implements OrderDAO {
         PreparedStatement preparedStatement = getPreparedStatement(query);
         try {
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int index = resultSet.getInt("maxOrderNumber");
+            resultSet.next();
+            int index = resultSet.getInt("maxOrderNumber");
+            if (index != 0) {
                 return ++index;
             }
             return 10100;

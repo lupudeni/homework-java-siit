@@ -111,8 +111,24 @@ public class OrderDAOImplTest {
         //then
         assertThat(returnedOrder.getOrderNumber()).isEqualTo(10101);
     }
-    // //preparedStatement.executeUpdate()
 
+    @Test
+    public void given_first_order_when_save_then_return_order_with_first_unique_number() throws SQLException {
+        //given
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/classicmodels_test?serverTimezone=EET", "siit", "siit");
+        connection.prepareStatement("SET FOREIGN_KEY_CHECKS = 0; ").executeUpdate();
+        connection.prepareStatement("TRUNCATE table orders; ").executeUpdate();
+        connection.prepareStatement("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+
+        Order order = createOrderForSaveTest(103);
+
+        //when
+        Order returnedOrder = sut.save(order);
+
+        //then
+        assertThat(returnedOrder.getOrderNumber()).isEqualTo(10100);
+
+    }
 
     @Test
     public void given_existing_number_when_find_by_number_then_return_order() {
@@ -134,7 +150,6 @@ public class OrderDAOImplTest {
         //then
         assertThat(returnedOrder).isEqualTo(order);
     }
-    //preparedStatement.executeUpdate()
 
     @Test
     public void given_customer_number_when_find_by_customer_then_return_list_of_order() {
