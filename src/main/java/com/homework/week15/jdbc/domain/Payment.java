@@ -20,5 +20,5 @@ public class Payment {
     private BigDecimal amount;
 
     @ToString.Exclude
-    private Customer customer;
+    private int customerNumber;
 }
