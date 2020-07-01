@@ -5,18 +5,23 @@ import com.homework.week15.jdbc.domain.Order;
 import com.homework.week15.jdbc.domain.OrderDetail;
 import com.homework.week15.jdbc.domain.Product;
 import com.homework.week15.jdbc.repository.*;
+import lombok.AllArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
-
+@AllArgsConstructor
 public class OrderService {
-    private final OrderDAO orderDAO = new OrderDAOImpl();
-    private final CustomerDAO customerDAO = new CustomerDAOImpl();
-    private final EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    private final ProductService productService = new ProductService();
+    private final OrderDAO orderDAO;
+    private final CustomerDAO customerDAO;
+    private final EmployeeDAO employeeDAO;
+    private final ProductService productService;
 
-    public Optional<Order> save(Order order) {
-        return Optional.ofNullable(orderDAO.save(order));
+    public OrderService() {
+        this(new OrderDAOImpl(), new CustomerDAOImpl(), new EmployeeDAOImpl(), new ProductService());
+    }
+
+    public Order save(Order order) {
+        return orderDAO.save(order);
     }
 
     public Optional<Order> findOrderByNumber(int orderNumber) {

@@ -1,13 +1,8 @@
 package com.homework.week15.jdbc.service;
 
-import com.homework.week15.jdbc.DBUtils;
 import com.homework.week15.jdbc.domain.Product;
 import com.homework.week15.jdbc.domain.ProductLine;
 import com.homework.week15.jdbc.repository.ProductDAO;
-import com.homework.week15.jdbc.repository.ProductDAOImpl;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,7 +11,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -25,22 +19,10 @@ import static org.assertj.core.api.Assertions.*;
 public class ProductServiceTest {
 
     @Mock
-    private ProductDAO productDAO;
+    private  ProductDAO productDAO; // = new ProductDAOImpl("jdbc:mysql://localhost:3306/classicmodels_test?serverTimezone=EET");
 
     @InjectMocks
     private ProductService sut;
-
-
-    @Before
-    public void setUp() throws SQLException {
-//        sut = new ProductService();
-        DBUtils.setUp();
-    }
-
-    @After
-    public void cleanUp() throws SQLException {
-        DBUtils.cleanUp();
-    }
 
     @Test
     public void given_product_when_save_then_return_product_with_new_code() {

@@ -8,7 +8,16 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductService {
-    private final ProductDAO productDAO = new ProductDAOImpl();
+
+    private final ProductDAO productDAO;
+
+    public ProductService(ProductDAO productDAO) { //for tests
+        this.productDAO = productDAO;
+    }
+
+    public ProductService() {
+        this(new ProductDAOImpl());
+    }
 
     public Optional<Product> save(Product product) {
         return Optional.ofNullable(productDAO.save(product));
